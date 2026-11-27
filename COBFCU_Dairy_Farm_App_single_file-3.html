@@ -1,0 +1,1383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f6f54">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>COBFCU Dairy Farm</title>
+<style>:root{
+  --bg:#f4f7f5;--card:#fff;--ink:#17231e;--mute:#5d6b64;--line:#dfe6e2;
+  --brand:#1f6f54;--brand-ink:#fff;--brand-soft:#e3f1ea;
+  --good:#1b7a3d;--warn:#a86400;--bad:#b3261e;--info:#1c5d99;
+  --good-bg:#e4f4ea;--warn-bg:#fff1d9;--bad-bg:#fde8e6;--info-bg:#e5f0fb;
+  --nav:62px;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0f1512;--card:#18211d;--ink:#e8f0ec;--mute:#9aaaa2;--line:#2a3730;--brand:#58b996;--brand-ink:#06251a;--brand-soft:#1d3a2f;
+    --good:#6fd08e;--warn:#f0b455;--bad:#ff8a80;--info:#7ab8f0;--good-bg:#16301f;--warn-bg:#35280f;--bad-bg:#3a1a17;--info-bg:#14283b}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 12px)}
+button,input,select,textarea{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:5;background:var(--brand);color:var(--brand-ink);padding:calc(10px + env(safe-area-inset-top)) 16px 10px}
+.top h1{margin:0;font-size:18px;font-weight:650;line-height:1.2}
+.top small{display:block;opacity:.85;font-size:13px}
+main{padding:12px 12px 8px;max-width:760px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.card h2{margin:0 0 8px;font-size:15px;font-weight:650}
+.muted{color:var(--mute)}.small{font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{background:var(--brand-soft);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-size:20px;line-height:1.15}
+.stat span{font-size:12px;color:var(--mute)}
+.btn{border:0;border-radius:12px;padding:12px 14px;background:var(--brand);color:var(--brand-ink);font-weight:600;min-height:44px;cursor:pointer}
+.btn.sec{background:var(--brand-soft);color:var(--ink)}
+.btn.del{background:var(--bad-bg);color:var(--bad)}
+.btn.full{width:100%}
+.btn.sm{padding:8px 12px;min-height:36px;font-size:14px}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.quick .btn{padding:10px 4px;font-size:14px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-size:14px;min-height:38px;cursor:pointer}
+.chip.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.seg{display:flex;background:var(--brand-soft);border-radius:12px;padding:3px;margin-bottom:10px}
+.seg button{flex:1;border:0;background:none;padding:9px 4px;border-radius:10px;font-weight:600;color:var(--mute);min-height:40px}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px #0002}
+.rec{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer}
+.rec .t{font-weight:600}.rec .s{font-size:13px;color:var(--mute)}.rec .r{text-align:right;font-weight:650;white-space:nowrap}
+.tag{display:inline-block;font-size:12px;border-radius:999px;padding:1px 8px;margin-left:4px;background:var(--info-bg);color:var(--info)}
+.tag.good{background:var(--good-bg);color:var(--good)}.tag.warn{background:var(--warn-bg);color:var(--warn)}.tag.bad{background:var(--bad-bg);color:var(--bad)}
+.alert{padding:10px 12px;border-radius:10px;margin-bottom:6px;font-size:14px;background:var(--info-bg);color:var(--info);cursor:pointer}
+.alert.warn{background:var(--warn-bg);color:var(--warn)}.alert.bad{background:var(--bad-bg);color:var(--bad)}
+.fab{position:fixed;right:16px;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 14px);width:56px;height:56px;border-radius:50%;border:0;background:var(--brand);color:var(--brand-ink);font-size:30px;box-shadow:0 4px 14px #0004;z-index:6}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:7;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;height:var(--nav);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;color:var(--mute)}
+nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{color:var(--brand);font-weight:700}
+/* forms */
+.sheet-wrap{position:fixed;inset:0;z-index:20;background:#0007;display:flex;align-items:flex-end;justify-content:center}
+.sheet-wrap[hidden]{display:none}
+.sheet{background:var(--bg);width:100%;max-width:760px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:14px 14px calc(18px + env(safe-area-inset-bottom))}
+.sheet h3{margin:2px 0 12px;font-size:17px}
+label.f{display:block;margin-bottom:12px}
+label.f>span{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
+label.f input,label.f select,label.f textarea,.inp{width:100%;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:11px 12px;min-height:44px}
+label.f textarea{min-height:76px}
+label.f em{font-style:normal;font-size:12px;color:var(--mute);display:block;margin-top:3px}
+.calc{background:var(--brand-soft);border-radius:10px;padding:11px 12px;font-weight:650}
+.err{background:var(--bad-bg);color:var(--bad);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:14px}
+.warnbox{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:14px}
+/* report table */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{position:sticky;top:0;text-align:right;font-weight:600;color:var(--mute);padding:6px 4px;border-bottom:1px solid var(--line);font-size:12px}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl td{padding:9px 4px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+.tbl td:first-child{width:38%}
+.tbl tr.area td{background:var(--brand-soft);font-weight:650;text-align:left;font-size:12px;padding:5px 6px;color:var(--mute);text-transform:uppercase;letter-spacing:.03em}
+.tbl tr.ind{cursor:pointer}
+.tbl .u{display:block;color:var(--mute);font-size:11px}
+.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.autodot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--brand);margin-right:3px;vertical-align:middle}
+details{border-top:1px solid var(--line);padding:8px 0}
+details summary{font-weight:600;cursor:pointer;min-height:36px;display:flex;align-items:center}
+.bars{display:flex;align-items:flex-end;gap:3px;height:84px;margin-top:6px}
+.bars i{flex:1;background:var(--brand);border-radius:3px 3px 0 0;min-height:2px;opacity:.9}
+.bars-l{display:flex;gap:3px;font-size:10px;color:var(--mute)}.bars-l span{flex:1;text-align:center}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 76px);background:#222;color:#fff;padding:10px 16px;border-radius:999px;z-index:30;font-size:14px;max-width:90%}
+.toast[hidden]{display:none}
+hr{border:0;border-top:1px solid var(--line);margin:12px 0}
+.list-item{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px;background:var(--bg)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="sheet" class="sheet-wrap" hidden></div>
+<div id="toast" class="toast" hidden></div>
+<script>/* COBFCU Dairy Farm Reporting - core logic (no DOM). Works in browser and Node. */
+(function (root) {
+'use strict';
+
+/* ---------- Ethiopian calendar ---------- */
+const EC_MONTHS = ['Meskerem','Tikimt','Hidar','Tahsas','Tir','Yekatit','Megabit','Miazia','Ginbot','Sene','Hamle','Nehase','Pagume'];
+const EPOCH = 1723856;
+
+function gregToJDN(y, m, d) {
+  const a = Math.floor((14 - m) / 12), yy = y + 4800 - a, mm = m + 12 * a - 3;
+  return d + Math.floor((153 * mm + 2) / 5) + 365 * yy + Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
+}
+function jdnToGreg(j) {
+  const a = j + 32044, b = Math.floor((4 * a + 3) / 146097), c = a - Math.floor(146097 * b / 4);
+  const d = Math.floor((4 * c + 3) / 1461), e = c - Math.floor(1461 * d / 4), m = Math.floor((5 * e + 2) / 153);
+  return { d: e - Math.floor((153 * m + 2) / 5) + 1, m: m + 3 - 12 * Math.floor(m / 10), y: 100 * b + d - 4800 + Math.floor(m / 10) };
+}
+function ecToJDN(y, m, d) { return EPOCH + 365 + 365 * (y - 1) + Math.floor(y / 4) + 30 * m + d - 31; }
+function jdnToEC(j) {
+  const t = j - EPOCH, r = ((t % 1461) + 1461) % 1461;
+  const n = (r % 365) + 365 * Math.floor(r / 1460);
+  return { y: 4 * Math.floor(t / 1461) + Math.floor(r / 365) - Math.floor(r / 1460), m: Math.floor(n / 30) + 1, d: (n % 30) + 1 };
+}
+const pad = (n, w) => String(n).padStart(w || 2, '0');
+function isoToJDN(iso) { const p = iso.split('-').map(Number); return gregToJDN(p[0], p[1], p[2]); }
+function jdnToISO(j) { const g = jdnToGreg(j); return g.y + '-' + pad(g.m) + '-' + pad(g.d); }
+function isoToEC(iso) { return jdnToEC(isoToJDN(iso)); }
+function ecToISO(y, m, d) { return jdnToISO(ecToJDN(y, m, d)); }
+function ecIsLeap(y) { return y % 4 === 3; }
+function ecMonthDays(y, m) { return m === 13 ? (ecIsLeap(y) ? 6 : 5) : 30; }
+function addDays(iso, n) { return jdnToISO(isoToJDN(iso) + n); }
+function daysBetween(a, b) { return isoToJDN(b) - isoToJDN(a); }
+function todayISO() { const d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function fmtEC(iso, short) {
+  if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return '';
+  const e = isoToEC(iso);
+  return EC_MONTHS[e.m - 1] + ' ' + e.d + (short ? '' : ', ' + e.y + ' E.C.');
+}
+function fmtGC(iso) {
+  if (!iso) return '';
+  const p = iso.split('-').map(Number);
+  return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][p[1] - 1] + ' ' + p[2] + ', ' + p[0];
+}
+
+/* ---------- Periods ---------- */
+function yearMonths(y, startMonth) {
+  const out = [];
+  if (!startMonth || startMonth === 1) { for (let m = 1; m <= 13; m++) out.push({ y, m }); return out; }
+  for (let m = startMonth; m <= 13; m++) out.push({ y: y - 1, m });
+  for (let m = 1; m < startMonth; m++) out.push({ y, m });
+  return out;
+}
+// p: {type:'month',y,m} | {type:'quarter',y,q} | {type:'year',y}
+function resolvePeriod(p, settings) {
+  const sm = (settings && settings.yearStart) || 1;
+  let months, label, key;
+  if (p.type === 'month') { months = [{ y: p.y, m: p.m }]; label = EC_MONTHS[p.m - 1] + ' ' + p.y + ' E.C.'; key = 'm:' + p.y + ':' + p.m; }
+  else if (p.type === 'quarter') {
+    const all = yearMonths(p.y, sm), b = [[0, 3], [3, 6], [6, 9], [9, 13]][p.q - 1];
+    months = all.slice(b[0], b[1]); key = 'q:' + p.y + ':' + p.q;
+    label = 'Q' + p.q + ' ' + p.y + ' E.C. (' + EC_MONTHS[months[0].m - 1] + ' – ' + EC_MONTHS[months[months.length - 1].m - 1] + ')';
+  } else { months = yearMonths(p.y, sm); key = 'y:' + p.y; label = (sm === 1 ? '' : 'Fiscal year ') + p.y + ' E.C.'; }
+  const f = months[0], l = months[months.length - 1];
+  const start = ecToISO(f.y, f.m, 1), end = ecToISO(l.y, l.m, ecMonthDays(l.y, l.m));
+  const gcStart = fmtGC(start), gcEnd = fmtGC(end);
+  return { type: p.type, key, months, start, end, label, days: daysBetween(start, end) + 1, gcLabel: gcStart + ' – ' + gcEnd };
+}
+const monthKey = (m) => 'm:' + m.y + ':' + m.m;
+function currentMonth(today) { const e = isoToEC(today || todayISO()); return { y: e.y, m: e.m }; }
+function currentQuarter(today, settings) {
+  const cm = currentMonth(today), sm = (settings && settings.yearStart) || 1;
+  // year label of the period that contains today
+  const yrs = [cm.y, cm.y + 1];
+  for (const y of yrs) {
+    const all = yearMonths(y, sm);
+    const idx = all.findIndex(x => x.y === cm.y && x.m === cm.m);
+    if (idx >= 0) return { y, q: idx < 3 ? 1 : idx < 6 ? 2 : idx < 9 ? 3 : 4 };
+  }
+  return { y: cm.y, q: 1 };
+}
+function currentYearLabel(today, settings) { return currentQuarter(today, settings).y; }
+
+/* ---------- Schema ---------- */
+const HERD_CATS = ['Lactating cow', 'Dry cow', 'Heifer', 'Calf', 'Bull', 'Other'];
+const COLLECTIONS = {
+  milk: {
+    title: 'Milk', sheet: 'Daily Milk Log', head: 'DAILY MILK PRODUCTION AND SALES LOG', sub: 'Record morning/evening milk, use, sales, and losses', dateField: 'date',
+    fields: [
+      { k: 'date', label: 'Date', type: 'date', required: true },
+      { k: 'session', label: 'Milking session', type: 'select', options: ['Morning', 'Evening', 'Whole day'], def: 'Morning' },
+      { k: 'produced', label: 'Milk produced (L)', type: 'number', required: true },
+      { k: 'onFarm', label: 'Milk used on farm (L)', type: 'number' },
+      { k: 'sold', label: 'Milk sold (L)', type: 'number' },
+      { k: 'rejected', label: 'Rejected / spoiled (L)', type: 'number' },
+      { k: 'buyer', label: 'Buyer / destination', type: 'text' },
+      { k: 'price', label: 'Price (ETB/L)', type: 'number' },
+      { k: 'revenue', label: 'Revenue (ETB)', type: 'calc', calc: r => num(r.sold) * num(r.price), dec: 2 },
+      { k: 'quality', label: 'Quality test result', type: 'select', options: ['Not tested', 'Pass', 'Fail'], def: 'Not tested' },
+      { k: 'remarks', label: 'Remarks', type: 'text' }
+    ],
+    xl: [['No.', null], ['Date', r => dateCell(r.date)], ['Milking session', r => r.session], ['Milk produced (L)', r => nz(r.produced)], ['Milk used on farm (L)', r => nz(r.onFarm)], ['Milk sold (L)', r => nz(r.sold)], ['Rejected / spoiled (L)', r => nz(r.rejected)], ['Buyer / destination', r => r.buyer], ['Price (ETB/L)', r => nz(r.price)], ['Revenue (ETB)', r => num(r.sold) * num(r.price)], ['Quality test / remarks', r => [r.quality && r.quality !== 'Not tested' ? r.quality : '', r.remarks].filter(Boolean).join(' – ')]],
+    widths: [6, 22, 14, 14, 14, 12, 14, 22, 12, 14, 30]
+  },
+  herd: {
+    title: 'Herd', sheet: 'Herd Register', head: 'HERD INVENTORY AND MOVEMENT REGISTER', sub: 'Update animal status and movements', dateField: null,
+    fields: [
+      { k: 'animalId', label: 'Animal ID / tag', type: 'text', required: true },
+      { k: 'breed', label: 'Breed', type: 'text', list: ['Holstein Friesian', 'Jersey', 'Cross-breed (F1)', 'Cross-breed (F2)', 'Local (Zebu)'] },
+      { k: 'sex', label: 'Sex', type: 'select', options: ['Female', 'Male'], def: 'Female' },
+      { k: 'category', label: 'Category / status', type: 'select', options: HERD_CATS, def: 'Lactating cow' },
+      { k: 'dob', label: 'Date of birth', type: 'date' },
+      { k: 'entryType', label: 'How the animal entered the herd', type: 'select', options: ['Opening stock', 'Born on farm', 'Purchased'], def: 'Opening stock' },
+      { k: 'entryDate', label: 'Date born / purchased', type: 'date', hint: 'Needed for "Born on farm" and "Purchased" so births are counted in the right month.' },
+      { k: 'exitType', label: 'Left the herd?', type: 'select', options: ['No', 'Died', 'Sold', 'Culled'], def: 'No' },
+      { k: 'exitDate', label: 'Date of death / sale / cull', type: 'date' },
+      { k: 'remarks', label: 'Remarks', type: 'text' }
+    ],
+    xl: [['No.', null], ['Animal ID', r => r.animalId], ['Breed', r => r.breed], ['Sex', r => r.sex], ['Category / status', r => r.category], ['Date of birth', r => dateCell(r.dob)], ['Opening status', r => r.entryType === 'Opening stock' ? 'In herd (opening)' : ''], ['Births / purchases', r => r.entryType !== 'Opening stock' ? r.entryType + (r.entryDate ? ' ' + dateCell(r.entryDate) : '') : ''], ['Deaths / sales / culls', r => r.exitType && r.exitType !== 'No' ? r.exitType + (r.exitDate ? ' ' + dateCell(r.exitDate) : '') : ''], ['Closing status', r => r.exitType && r.exitType !== 'No' ? 'Left herd (' + r.exitType + ')' : 'In herd'], ['Remarks', r => r.remarks]],
+    widths: [6, 14, 18, 10, 16, 22, 18, 30, 30, 18, 28]
+  },
+  breeding: {
+    title: 'Breeding', sheet: 'Breeding AI Log', head: 'BREEDING AND ARTIFICIAL INSEMINATION LOG', sub: 'Record heat detection, service, pregnancy diagnosis, and calving', dateField: 'date',
+    fields: [
+      { k: 'date', label: 'Date', type: 'date', required: true },
+      { k: 'animalId', label: 'Animal ID', type: 'text', required: true },
+      { k: 'heat', label: 'Heat observed (Y/N)', type: 'select', options: ['Y', 'N'], def: 'Y' },
+      { k: 'service', label: 'Service type', type: 'select', options: ['AI', 'Natural', 'None (heat only)'], def: 'AI' },
+      { k: 'sire', label: 'Sire / semen ID', type: 'text' },
+      { k: 'tech', label: 'Technician', type: 'text' },
+      { k: 'pdDate', label: 'Pregnancy diagnosis date', type: 'date' },
+      { k: 'result', label: 'Result', type: 'select', options: ['Pending', 'Pregnant', 'Not pregnant'], def: 'Pending' },
+      { k: 'expected', label: 'Expected calving date', type: 'calc', calc: r => (r.date && isServed(r) && r.result !== 'Not pregnant') ? addDays(r.date, 283) : '', isDate: true, hint: 'Service date + 283 days' },
+      { k: 'calvingDate', label: 'Actual calving date', type: 'date' },
+      { k: 'outcome', label: 'Calving outcome', type: 'select', options: ['', 'Live calf', 'Stillbirth', 'Abortion'], def: '' },
+      { k: 'remarks', label: 'Remarks', type: 'text' }
+    ],
+    xl: [['No.', null], ['Date', r => dateCell(r.date)], ['Animal ID', r => r.animalId], ['Heat observed (Y/N)', r => r.heat], ['Service type (AI/natural)', r => r.service], ['Sire / semen ID', r => r.sire], ['Technician', r => r.tech], ['Pregnancy diagnosis date', r => dateCell(r.pdDate)], ['Result', r => r.result], ['Expected calving date', r => (r.date && isServed(r) && r.result !== 'Not pregnant') ? dateCell(addDays(r.date, 283)) : ''], ['Actual calving / outcome', r => [dateCell(r.calvingDate), r.outcome].filter(Boolean).join(' – ')], ['Remarks', r => r.remarks]],
+    widths: [6, 22, 14, 12, 16, 16, 16, 22, 14, 22, 30, 28]
+  },
+  health: {
+    title: 'Health', sheet: 'Health Log', head: 'ANIMAL HEALTH, VACCINATION AND TREATMENT LOG', sub: 'Record veterinary activities and disease incidents', dateField: 'date',
+    fields: [
+      { k: 'date', label: 'Date', type: 'date', required: true },
+      { k: 'kind', label: 'Activity type', type: 'select', options: ['Treatment', 'Vaccination', 'Deworming', 'Other'], def: 'Treatment' },
+      { k: 'animal', label: 'Animal ID / group', type: 'text', required: true },
+      { k: 'head', label: 'Number of animals', type: 'number', def: 1, hint: 'Head covered by this record (e.g. 40 for a herd vaccination).' },
+      { k: 'condition', label: 'Condition / disease', type: 'text' },
+      { k: 'action', label: 'Action / treatment', type: 'text' },
+      { k: 'medicine', label: 'Medicine / vaccine', type: 'text' },
+      { k: 'dose', label: 'Dose', type: 'text' },
+      { k: 'vet', label: 'Veterinarian / provider', type: 'text' },
+      { k: 'outcome', label: 'Outcome / follow-up', type: 'text' },
+      { k: 'cost', label: 'Cost (ETB)', type: 'number' },
+      { k: 'remarks', label: 'Remarks', type: 'text' }
+    ],
+    xl: [['No.', null], ['Date', r => dateCell(r.date)], ['Animal ID / group', r => r.animal + (num(r.head) > 1 ? ' (' + num(r.head) + ' head)' : '')], ['Condition / disease', r => r.condition], ['Action / treatment', r => [r.kind, r.action].filter(Boolean).join(': ')], ['Medicine / vaccine', r => r.medicine], ['Dose', r => r.dose], ['Veterinarian / provider', r => r.vet], ['Outcome / follow-up', r => r.outcome], ['Cost (ETB)', r => nz(r.cost)], ['Remarks', r => r.remarks]],
+    widths: [6, 22, 22, 22, 26, 20, 12, 22, 24, 12, 28]
+  },
+  feed: {
+    title: 'Feed', sheet: 'Feed Log', head: 'FEED AND FORAGE MANAGEMENT LOG', sub: 'Track feed received, issued, consumed, and forage', dateField: 'date',
+    fields: [
+      { k: 'date', label: 'Date', type: 'date', required: true },
+      { k: 'type', label: 'Feed / forage type', type: 'text', required: true, list: ['Concentrate', 'Wheat bran', 'Noug cake', 'Hay', 'Silage', 'Napier grass', 'Green fodder', 'Mineral / salt'] },
+      { k: 'kind', label: 'Feed group', type: 'select', options: ['Concentrate', 'Forage', 'Mineral / other'], def: 'Concentrate' },
+      { k: 'opening', label: 'Opening stock (kg)', type: 'number' },
+      { k: 'received', label: 'Received (kg)', type: 'number' },
+      { k: 'issued', label: 'Issued / consumed (kg)', type: 'number' },
+      { k: 'closing', label: 'Closing stock (kg)', type: 'calc', calc: r => num(r.opening) + num(r.received) - num(r.issued), dec: 1 },
+      { k: 'supplier', label: 'Supplier / source', type: 'text' },
+      { k: 'unitCost', label: 'Unit cost (ETB/kg)', type: 'number' },
+      { k: 'totalCost', label: 'Total cost (ETB)', type: 'calc', calc: r => num(r.received) * num(r.unitCost), dec: 2, hint: 'Received kg × unit cost' },
+      { k: 'remarks', label: 'Remarks', type: 'text' }
+    ],
+    xl: [['No.', null], ['Date', r => dateCell(r.date)], ['Feed / forage type', r => r.type], ['Opening stock (kg)', r => nz(r.opening)], ['Received (kg)', r => nz(r.received)], ['Issued / consumed (kg)', r => nz(r.issued)], ['Closing stock (kg)', r => num(r.opening) + num(r.received) - num(r.issued)], ['Supplier / source', r => r.supplier], ['Unit cost (ETB/kg)', r => nz(r.unitCost)], ['Total cost (ETB)', r => num(r.received) * num(r.unitCost)], ['Remarks', r => r.remarks]],
+    widths: [6, 22, 20, 14, 12, 16, 14, 22, 14, 14, 28]
+  },
+  sales: {
+    title: 'Sales', sheet: 'Sales Finance Log', head: 'DAIRY SALES AND FINANCIAL LOG', sub: 'Record milk and other dairy product sales and related payments', dateField: 'date',
+    fields: [
+      { k: 'date', label: 'Date', type: 'date', required: true },
+      { k: 'product', label: 'Product', type: 'text', required: true, list: ['Milk', 'Yoghurt', 'Butter', 'Cheese', 'Calf', 'Cull cow', 'Manure'] },
+      { k: 'qty', label: 'Quantity', type: 'number', required: true },
+      { k: 'unit', label: 'Unit', type: 'text', def: 'L', list: ['L', 'kg', 'head', 'piece'] },
+      { k: 'price', label: 'Unit price (ETB)', type: 'number' },
+      { k: 'total', label: 'Total sales (ETB)', type: 'calc', calc: r => num(r.qty) * num(r.price), dec: 2 },
+      { k: 'customer', label: 'Customer', type: 'text' },
+      { k: 'cash', label: 'Cash received (ETB)', type: 'number' },
+      { k: 'credit', label: 'Credit / receivable (ETB)', type: 'calc', calc: r => Math.max(0, num(r.qty) * num(r.price) - num(r.cash)), dec: 2 },
+      { k: 'receipt', label: 'Receipt / invoice no.', type: 'text' },
+      { k: 'remarks', label: 'Remarks', type: 'text' }
+    ],
+    xl: [['No.', null], ['Date', r => dateCell(r.date)], ['Product', r => r.product], ['Quantity', r => nz(r.qty)], ['Unit', r => r.unit], ['Unit price (ETB)', r => nz(r.price)], ['Total sales (ETB)', r => num(r.qty) * num(r.price)], ['Customer', r => r.customer], ['Cash received (ETB)', r => nz(r.cash)], ['Credit / receivable (ETB)', r => Math.max(0, num(r.qty) * num(r.price) - num(r.cash))], ['Receipt / invoice no.', r => r.receipt], ['Remarks', r => r.remarks]],
+    widths: [6, 22, 16, 10, 8, 14, 16, 22, 16, 18, 18, 26]
+  },
+  actions: {
+    title: 'Actions', sheet: 'Action Tracker', head: 'CHALLENGES AND CORRECTIVE ACTION TRACKER', sub: 'Track operational gaps and management decisions', dateField: 'date',
+    fields: [
+      { k: 'date', label: 'Date identified', type: 'date', required: true },
+      { k: 'issue', label: 'Challenge / issue', type: 'textarea', required: true },
+      { k: 'root', label: 'Root cause', type: 'textarea' },
+      { k: 'action', label: 'Corrective action', type: 'textarea' },
+      { k: 'owner', label: 'Responsible person', type: 'text' },
+      { k: 'deadline', label: 'Deadline', type: 'date' },
+      { k: 'budget', label: 'Required budget / support', type: 'text' },
+      { k: 'status', label: 'Status', type: 'select', options: ['Not started', 'In progress', 'Completed', 'Cancelled'], def: 'Not started' },
+      { k: 'done', label: 'Completion date', type: 'date' },
+      { k: 'remarks', label: 'Evidence / remarks', type: 'text' }
+    ],
+    xl: [['No.', null], ['Date identified', r => dateCell(r.date)], ['Challenge / issue', r => r.issue], ['Root cause', r => r.root], ['Corrective action', r => r.action], ['Responsible person', r => r.owner], ['Deadline', r => dateCell(r.deadline)], ['Required budget / support', r => r.budget], ['Status', r => r.status], ['Completion date', r => dateCell(r.done)], ['Evidence / remarks', r => r.remarks]],
+    widths: [6, 22, 32, 28, 32, 20, 22, 24, 14, 22, 28]
+  }
+};
+const LOG_KEYS = ['milk', 'herd', 'breeding', 'health', 'feed', 'sales'];
+
+function num(v) { const n = parseFloat(v); return isFinite(n) ? n : 0; }
+function nz(v) { return (v === '' || v === undefined || v === null || !isFinite(parseFloat(v))) ? '' : parseFloat(v); }
+function dateCell(iso) { return iso ? fmtEC(iso, false) + ' (' + iso + ')' : ''; }
+function isServed(r) { return r.service === 'AI' || r.service === 'Natural'; }
+function has(v) { return v !== '' && v !== undefined && v !== null && isFinite(parseFloat(v)); }
+
+/* ---------- Report definitions ---------- */
+// agg: how monthly targets combine for quarter / year targets: sum | last | avg
+const INDICATORS = [
+  { k: 'milkTotal', area: 'Milk production', name: 'Total milk produced', unit: 'Litres', agg: 'sum', dec: 1 },
+  { k: 'milkPerDay', area: 'Milk production', name: 'Average milk produced per day', unit: 'Litres/day', agg: 'avg', dec: 1 },
+  { k: 'milkPerCow', area: 'Milk production', name: 'Average milk yield per lactating cow', unit: 'Litres/cow/day', agg: 'avg', dec: 2 },
+  { k: 'rejected', area: 'Milk quality', name: 'Milk rejected / spoiled', unit: 'Litres', agg: 'sum', dec: 1, lowerBetter: true },
+  { k: 'qualityPass', area: 'Milk quality', name: 'Milk passing quality checks', unit: '%', agg: 'avg', dec: 1 },
+  { k: 'milkSold', area: 'Milk sales', name: 'Milk sold', unit: 'Litres', agg: 'sum', dec: 1 },
+  { k: 'milkRevenue', area: 'Milk sales', name: 'Milk sales revenue', unit: 'ETB', agg: 'sum', dec: 2 },
+  { k: 'avgPrice', area: 'Milk sales', name: 'Average selling price', unit: 'ETB/litre', agg: 'avg', dec: 2 },
+  { k: 'herdTotal', area: 'Herd', name: 'Total herd at month-end', unit: 'Head', agg: 'last', dec: 0 },
+  { k: 'lactating', area: 'Herd', name: 'Lactating cows', unit: 'Head', agg: 'last', dec: 0 },
+  { k: 'dry', area: 'Herd', name: 'Dry cows', unit: 'Head', agg: 'last', dec: 0 },
+  { k: 'heifers', area: 'Herd', name: 'Heifers', unit: 'Head', agg: 'last', dec: 0 },
+  { k: 'calves', area: 'Herd', name: 'Calves', unit: 'Head', agg: 'last', dec: 0 },
+  { k: 'births', area: 'Herd', name: 'New births', unit: 'Head', agg: 'sum', dec: 0 },
+  { k: 'deaths', area: 'Herd', name: 'Deaths / mortality', unit: 'Head', agg: 'sum', dec: 0, lowerBetter: true },
+  { k: 'served', area: 'Breeding', name: 'Cows/heifers served or inseminated', unit: 'Head', agg: 'sum', dec: 0 },
+  { k: 'pregnancies', area: 'Breeding', name: 'Confirmed pregnancies', unit: 'Head', agg: 'sum', dec: 0 },
+  { k: 'calvings', area: 'Breeding', name: 'Successful calving', unit: 'Head', agg: 'sum', dec: 0 },
+  { k: 'treated', area: 'Animal health', name: 'Animals treated', unit: 'Head', agg: 'sum', dec: 0 },
+  { k: 'vaccinated', area: 'Animal health', name: 'Vaccination / deworming completed', unit: 'Head', agg: 'sum', dec: 0 },
+  { k: 'feedConsumed', area: 'Feed', name: 'Total feed consumed', unit: 'Kg', agg: 'sum', dec: 1 },
+  { k: 'feedCost', area: 'Feed', name: 'Feed cost', unit: 'ETB', agg: 'sum', dec: 2, lowerBetter: true },
+  { k: 'forage', area: 'Feed', name: 'Forage produced / purchased', unit: 'Kg', agg: 'sum', dec: 1 },
+  { k: 'customers', area: 'Marketing', name: 'Active customers supplied', unit: 'Number', agg: 'last', dec: 0 },
+  { k: 'complaints', area: 'Marketing', name: 'Customer complaints received', unit: 'Number', agg: 'sum', dec: 0, manual: true, lowerBetter: true },
+  { k: 'opex', area: 'Finance', name: 'Total operating expenses', unit: 'ETB', agg: 'sum', dec: 2, lowerBetter: true },
+  { k: 'surplus', area: 'Finance', name: 'Gross operating surplus (if calculated)', unit: 'ETB', agg: 'sum', dec: 2 },
+  { k: 'breakdowns', area: 'Assets', name: 'Equipment / facility breakdowns', unit: 'Number', agg: 'sum', dec: 0, manual: true, lowerBetter: true },
+  { k: 'workdays', area: 'Human resources', name: 'Staff attendance / workdays', unit: 'Days', agg: 'sum', dec: 0, manual: true }
+];
+const NARRATIVE = {
+  month: ['Executive summary and overall performance', 'Main achievements against monthly plan', 'Major production constraints and reasons for variance', 'Milk quality, testing results, and rejected milk explanation', 'Breeding / AI progress and pregnancy outcomes', 'Animal health incidents, treatment, and mortality', 'Feed availability, ration quality, and forage situation', 'Marketing, customer feedback, and outstanding payments', 'Financial performance and cost-control issues', 'Priorities for the next month'],
+  quarter: ['Summary of the quarter and overall performance', 'Comparison of monthly results and trend', 'Herd growth, lactation performance, calving, and breeding results', 'Milk quality and buyer/customer performance', 'Feed and forage availability, consumption, and cost trends', 'Animal health, disease, mortality, and biosecurity review', 'Financial performance, cash flow, and budget utilization', 'Major risks, challenges, and lessons learned', 'Corrective actions carried forward and their status', 'Priorities and resource requirements for next quarter'],
+  year: ['Executive summary of annual performance', 'Achievement of annual objectives and targets', 'Annual milk production, yield, quality, and sales analysis', 'Herd inventory, births, deaths, culling, and replacement analysis', 'Breeding / AI performance, conception, pregnancy, and calving results', 'Feed and forage production, procurement, consumption, and cost analysis', 'Animal health, vaccination, disease incidence, and mortality review', 'Marketing, customer base, sales revenue, and receivables analysis', 'Annual budget, expenditure, revenue, profitability, and cash-flow review', 'Asset condition, maintenance, and investment needs', 'Staff performance, training, and capacity gaps', 'Environmental management and manure utilization', 'Major achievements, challenges, lessons learned, and recommendations', 'Proposed priorities and targets for the next financial year']
+};
+const STATUS = ['Not started', 'In progress', 'Completed', 'Cancelled'];
+const REPORT_LISTS = {
+  month: { title: 'Corrective action tracker', fields: [['issue', 'Issue / gap'], ['action', 'Corrective action'], ['owner', 'Responsible person'], ['deadline', 'Deadline', 'date'], ['cost', 'Required resource / cost'], ['status', 'Status', 'status'], ['remarks', 'Follow-up remarks']] },
+  quarter: { title: 'Key challenges and risks', fields: [['issue', 'Key challenge / risk'], ['action', 'Action required'], ['owner', 'Responsible'], ['deadline', 'Deadline', 'date'], ['cost', 'Budget / support needed'], ['status', 'Status', 'status'], ['decision', 'Management decision']] },
+  year: { title: 'Next-year priorities', fields: [['issue', 'Next-year priority / activity'], ['action', 'Expected output / target'], ['owner', 'Responsible body'], ['deadline', 'Timeline'], ['cost', 'Estimated budget (ETB)', 'number'], ['status', 'Funding source'], ['remarks', 'Remarks']] }
+};
+const HEADERS = {
+  month: [['month', 'Reporting month', 'auto'], ['ecYear', 'E.C. year', 'auto'], ['gc', 'G.C. equivalent', 'auto'], ['preparedBy', 'Prepared by'], ['submitted', 'Date submitted', 'date'], ['reviewedBy', 'Reviewed by']],
+  quarter: [['quarter', 'Quarter', 'auto'], ['ecYear', 'E.C. year', 'auto'], ['months', 'Months covered', 'auto'], ['preparedBy', 'Prepared by'], ['submitted', 'Date submitted', 'date'], ['reviewedBy', 'Reviewed / approved by']],
+  year: [['ecYear', 'Reporting year (E.C.)', 'auto'], ['gc', 'G.C. equivalent', 'auto'], ['period', 'Reporting period', 'auto'], ['preparedBy', 'Prepared by'], ['submitted', 'Date submitted', 'date'], ['reviewedBy', 'Approved by']]
+};
+
+/* ---------- Herd presence ---------- */
+function presentAt(a, asOf) {
+  const entry = a.entryDate || '0000-00-00';
+  if (entry > asOf) return false;
+  if (a.exitType && a.exitType !== 'No' && a.exitDate && a.exitDate <= asOf) return false;
+  return true;
+}
+
+/* ---------- Calculations ---------- */
+function inP(iso, P) { return !!iso && iso >= P.start && iso <= P.end; }
+function sum(list, f) { let s = 0; for (const r of list) s += num(f(r)); return s; }
+
+function computeAuto(db, P, settings, today) {
+  today = today || todayISO();
+  const asOf = P.end < today ? P.end : today;
+  const effEnd = asOf;
+  const elapsedDays = Math.max(1, daysBetween(P.start, effEnd) + 1);
+  const milk = db.milk.filter(r => inP(r.date, P));
+  const sales = db.sales.filter(r => inP(r.date, P));
+  const feed = db.feed.filter(r => inP(r.date, P));
+  const health = db.health.filter(r => inP(r.date, P));
+  const breeding = db.breeding;
+  const a = {};
+  const started = P.start <= today;
+  if (!started) return a;
+
+  if (milk.length) {
+    a.milkTotal = sum(milk, r => r.produced);
+    a.milkPerDay = a.milkTotal / elapsedDays;
+    a.rejected = sum(milk, r => r.rejected);
+    const tested = milk.filter(r => r.quality === 'Pass' || r.quality === 'Fail');
+    if (tested.length) a.qualityPass = 100 * tested.filter(r => r.quality === 'Pass').length / tested.length;
+  }
+  // herd (as of end of period or today)
+  const present = db.herd.filter(x => presentAt(x, asOf));
+  if (db.herd.length) {
+    const cnt = c => present.filter(x => x.category === c).length;
+    a.herdTotal = present.length; a.lactating = cnt('Lactating cow'); a.dry = cnt('Dry cow'); a.heifers = cnt('Heifer'); a.calves = cnt('Calf');
+    a.births = db.herd.filter(x => x.entryType === 'Born on farm' && inP(x.entryDate, P)).length;
+    a.deaths = db.herd.filter(x => x.exitType === 'Died' && inP(x.exitDate, P)).length;
+    if (a.milkPerDay !== undefined && a.lactating > 0) a.milkPerCow = a.milkPerDay / a.lactating;
+  }
+  // milk sales
+  if ((settings.milkSource || 'milklog') === 'saleslog') {
+    const ms = sales.filter(r => /milk/i.test(r.product || ''));
+    if (ms.length) { a.milkSold = sum(ms, r => r.qty); a.milkRevenue = sum(ms, r => num(r.qty) * num(r.price)); }
+  } else if (milk.length) {
+    a.milkSold = sum(milk, r => r.sold); a.milkRevenue = sum(milk, r => num(r.sold) * num(r.price));
+  }
+  if (a.milkSold > 0 && a.milkRevenue !== undefined) a.avgPrice = a.milkRevenue / a.milkSold;
+  // breeding
+  const svc = breeding.filter(r => isServed(r) && inP(r.date, P));
+  const pdc = breeding.filter(r => r.result === 'Pregnant' && inP(r.pdDate, P));
+  const calv = breeding.filter(r => r.outcome === 'Live calf' && inP(r.calvingDate, P));
+  if (breeding.length) { a.served = svc.length; a.pregnancies = pdc.length; a.calvings = calv.length; }
+  // health
+  if (health.length || db.health.length) {
+    a.treated = sum(health.filter(r => r.kind === 'Treatment'), r => has(r.head) ? r.head : 1);
+    a.vaccinated = sum(health.filter(r => r.kind === 'Vaccination' || r.kind === 'Deworming'), r => has(r.head) ? r.head : 1);
+  }
+  // feed
+  if (feed.length) {
+    a.feedConsumed = sum(feed, r => r.issued);
+    a.feedCost = sum(feed, r => num(r.received) * num(r.unitCost));
+    a.forage = sum(feed.filter(r => r.kind === 'Forage'), r => r.received);
+  }
+  // customers
+  const cust = new Set();
+  milk.filter(r => num(r.sold) > 0 && r.buyer && r.buyer.trim()).forEach(r => cust.add(r.buyer.trim().toLowerCase()));
+  sales.filter(r => r.customer && r.customer.trim()).forEach(r => cust.add(r.customer.trim().toLowerCase()));
+  if (cust.size) a.customers = cust.size;
+  // finance
+  const healthCost = sum(health, r => r.cost);
+  const hasCost = feed.length || health.length;
+  const other = P.otherExpenses || 0;
+  if (hasCost || other) a.opex = (a.feedCost || 0) + healthCost + other;
+  const nonMilk = sales.filter(r => !/milk/i.test(r.product || ''));
+  const nmRev = sum(nonMilk, r => num(r.qty) * num(r.price));
+  if (a.milkRevenue !== undefined || nmRev) {
+    const rev = (a.milkRevenue || 0) + nmRev;
+    if (a.opex !== undefined) a.surplus = rev - a.opex;
+  }
+  return a;
+}
+
+function sumManual(db, months, key, field) {
+  let total = null;
+  for (const m of months) {
+    const rep = db.reports[monthKey(m)];
+    if (!rep) continue;
+    let v;
+    if (field === 'other') v = rep.other; else v = rep.overrides && rep.overrides[key];
+    if (has(v)) total = (total || 0) + parseFloat(v);
+  }
+  return total;
+}
+
+function reportData(db, period, settings, today) {
+  today = today || todayISO();
+  const P = resolvePeriod(period, settings);
+  const rep = db.reports[P.key] || {};
+  // other expenses (manual): month -> own input, quarter/year -> sum of months
+  P.otherExpenses = period.type === 'month' ? num(rep.other) : (sumManual(db, P.months, null, 'other') || 0);
+  const auto = computeAuto(db, P, settings, today);
+  const rows = INDICATORS.map(ind => {
+    const k = ind.k;
+    let autoVal = auto[k];
+    if (ind.manual && period.type !== 'month') { const s = sumManual(db, P.months, k); autoVal = s === null ? undefined : s; }
+    const ov = rep.overrides ? rep.overrides[k] : undefined;
+    const hasOv = has(ov);
+    const actual = hasOv ? parseFloat(ov) : (autoVal !== undefined && isFinite(autoVal) ? autoVal : null);
+    // target
+    let target = null, targetDerived = false;
+    const own = rep.targets ? rep.targets[k] : undefined;
+    if (has(own)) target = parseFloat(own);
+    else if (period.type !== 'month') {
+      const vals = [];
+      for (const m of P.months) { const mr = db.reports[monthKey(m)]; const t = mr && mr.targets ? mr.targets[k] : undefined; if (has(t)) vals.push(parseFloat(t)); }
+      if (vals.length) {
+        targetDerived = true;
+        target = ind.agg === 'sum' ? vals.reduce((x, y) => x + y, 0) : ind.agg === 'last' ? vals[vals.length - 1] : vals.reduce((x, y) => x + y, 0) / vals.length;
+      }
+    }
+    const variance = (actual !== null && target !== null) ? actual - target : null;
+    const ach = (actual !== null && target !== null && target !== 0) ? 100 * actual / target : null;
+    return Object.assign({}, ind, { auto: autoVal !== undefined ? autoVal : null, override: hasOv ? parseFloat(ov) : null, actual, target, targetDerived, variance, ach, remarks: (rep.remarks && rep.remarks[k]) || '' });
+  });
+  return { P, rep, rows, period };
+}
+
+function fmtNum(v, dec) {
+  if (v === null || v === undefined || !isFinite(v)) return '—';
+  return Number(v).toLocaleString('en-US', { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 });
+}
+
+function headerValues(period, P, settings) {
+  const sm = (settings && settings.yearStart) || 1;
+  if (period.type === 'month') return { month: EC_MONTHS[period.m - 1], ecYear: String(period.y), gc: P.gcLabel };
+  if (period.type === 'quarter') return { quarter: 'Q' + period.q, ecYear: String(period.y), months: P.months.map(m => EC_MONTHS[m.m - 1]).join(', ') };
+  return { ecYear: String(period.y), gc: P.gcLabel, period: sm === 1 ? 'Meskerem – Pagume' : 'Hamle – Sene (fiscal year)' };
+}
+
+/* ---------- Alerts for dashboard ---------- */
+function alerts(db, today) {
+  today = today || todayISO();
+  const out = [];
+  const pdDue = db.breeding.filter(r => isServed(r) && r.result === 'Pending' && daysBetween(r.date, today) >= 45);
+  if (pdDue.length) out.push({ level: 'warn', text: pdDue.length + ' service' + (pdDue.length > 1 ? 's' : '') + ' awaiting pregnancy diagnosis (45+ days)', go: 'breeding' });
+  const calvSoon = db.breeding.filter(r => isServed(r) && r.result === 'Pregnant' && !r.calvingDate && r.date && (() => { const d = daysBetween(today, addDays(r.date, 283)); return d >= 0 && d <= 30; })());
+  if (calvSoon.length) out.push({ level: 'info', text: calvSoon.length + ' cow' + (calvSoon.length > 1 ? 's' : '') + ' expected to calve within 30 days', go: 'breeding' });
+  const overdueCalv = db.breeding.filter(r => isServed(r) && r.result === 'Pregnant' && !r.calvingDate && r.date && addDays(r.date, 283) < today);
+  if (overdueCalv.length) out.push({ level: 'warn', text: overdueCalv.length + ' pregnant cow' + (overdueCalv.length > 1 ? 's' : '') + ' past expected calving date', go: 'breeding' });
+  const rec = db.sales.reduce((s, r) => s + Math.max(0, num(r.qty) * num(r.price) - num(r.cash)), 0);
+  if (rec > 0) out.push({ level: 'warn', text: 'Outstanding receivables: ' + fmtNum(rec, 2) + ' ETB', go: 'sales' });
+  const od = db.actions.filter(r => r.deadline && r.deadline < today && r.status !== 'Completed' && r.status !== 'Cancelled');
+  if (od.length) out.push({ level: 'bad', text: od.length + ' overdue corrective action' + (od.length > 1 ? 's' : ''), go: 'actions' });
+  const last = db.milk.length ? db.milk.map(r => r.date).sort().pop() : null;
+  if (!last) out.push({ level: 'info', text: 'No milk records yet. Tap “+ Milk” to start.', go: 'milk' });
+  else if (daysBetween(last, today) >= 2) out.push({ level: 'info', text: 'No milk record since ' + fmtEC(last) + ' (' + daysBetween(last, today) + ' days)', go: 'milk' });
+  return out;
+}
+
+/* ---------- Validation ---------- */
+function validate(key, rec) {
+  const errs = [], warns = [];
+  const C = COLLECTIONS[key];
+  for (const f of C.fields) {
+    if (f.required && (rec[f.k] === undefined || rec[f.k] === '' || rec[f.k] === null)) errs.push(f.label + ' is required');
+    if (f.type === 'number' && has(rec[f.k]) && parseFloat(rec[f.k]) < 0) errs.push(f.label + ' cannot be negative');
+  }
+  if (key === 'milk' && !errs.length) {
+    if (num(rec.sold) + num(rec.onFarm) + num(rec.rejected) > num(rec.produced) + 0.0001) warns.push('Sold + used on farm + rejected is more than the milk produced.');
+    if (num(rec.sold) > 0 && !has(rec.price)) warns.push('Milk sold but no price entered, so revenue will be 0.');
+  }
+  if (key === 'herd') {
+    if ((rec.entryType === 'Born on farm' || rec.entryType === 'Purchased') && !rec.entryDate) errs.push('Enter the date born / purchased');
+    if (rec.exitType && rec.exitType !== 'No' && !rec.exitDate) errs.push('Enter the date of death / sale / cull');
+  }
+  if (key === 'breeding') {
+    if (rec.result === 'Pregnant' && !rec.pdDate) errs.push('Enter the pregnancy diagnosis date');
+    if (rec.outcome && !rec.calvingDate) errs.push('Enter the actual calving date');
+  }
+  if (key === 'health' && has(rec.head) && parseFloat(rec.head) < 1) errs.push('Number of animals must be at least 1');
+  if (key === 'sales' && num(rec.cash) > num(rec.qty) * num(rec.price) + 0.0001) warns.push('Cash received is more than the total sales.');
+  return { errs, warns };
+}
+
+/* ---------- Minimal XLSX writer (zip STORE, no dependencies) ---------- */
+const CRC_T = (() => { const t = []; for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8) { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function utf8(s) { if (typeof TextEncoder !== 'undefined') return new TextEncoder().encode(s); return Uint8Array.from(Buffer.from(s, 'utf8')); }
+function zipStore(files) { // files: [{name, data(string)}]
+  const parts = [], central = []; let offset = 0;
+  const u16 = n => [n & 255, (n >>> 8) & 255], u32 = n => [n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255];
+  for (const f of files) {
+    const nameB = utf8(f.name), data = utf8(f.data), crc = crc32(data);
+    const lh = Uint8Array.from([0x50, 0x4b, 3, 4, 20, 0, 0, 8, 0, 0, 0, 0, 0x21, 0, ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nameB.length), 0, 0]);
+    parts.push(lh, nameB, data);
+    central.push({ nameB, crc, size: data.length, offset });
+    offset += lh.length + nameB.length + data.length;
+  }
+  const cdStart = offset;
+  for (const c of central) {
+    const ch = Uint8Array.from([0x50, 0x4b, 1, 2, 20, 0, 20, 0, 0, 8, 0, 0, 0, 0, 0x21, 0, ...u32(c.crc), ...u32(c.size), ...u32(c.size), ...u16(c.nameB.length), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...u32(c.offset)]);
+    parts.push(ch, c.nameB); offset += ch.length + c.nameB.length;
+  }
+  const cdSize = offset - cdStart;
+  parts.push(Uint8Array.from([0x50, 0x4b, 5, 6, 0, 0, 0, 0, ...u16(central.length), ...u16(central.length), ...u32(cdSize), ...u32(cdStart), 0, 0]));
+  let total = 0; parts.forEach(p => total += p.length);
+  const out = new Uint8Array(total); let o = 0; parts.forEach(p => { out.set(p, o); o += p.length; });
+  return out;
+}
+const xe = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '');
+function colName(i) { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; }
+// style ids
+const S = { def: 0, title: 1, header: 2, text: 3, int: 4, dec: 5, pct: 6, label: 7, sub: 8, section: 9 };
+function sheetXml(sh) {
+  let x = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
+  x += '<sheetViews><sheetView workbookViewId="0" showGridLines="0">' + (sh.freeze ? '<pane ySplit="' + sh.freeze + '" topLeftCell="A' + (sh.freeze + 1) + '" activePane="bottomLeft" state="frozen"/>' : '') + '</sheetView></sheetViews>';
+  x += '<cols>' + sh.widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols><sheetData>';
+  sh.rows.forEach((row, ri) => {
+    if (!row) return;
+    const cells = row.cells || row;
+    x += '<row r="' + (ri + 1) + '"' + (row.h ? ' ht="' + row.h + '" customHeight="1"' : '') + '>';
+    cells.forEach((c, ci) => {
+      if (c === null || c === undefined) return;
+      if (typeof c !== 'object') c = { v: c };
+      const ref = colName(ci) + (ri + 1);
+      const s = c.s !== undefined ? c.s : (typeof c.v === 'number' ? S.int : S.text);
+      if (c.f !== undefined) {
+        if (typeof c.v === 'number') x += '<c r="' + ref + '" s="' + s + '"><f>' + xe(c.f) + '</f><v>' + c.v + '</v></c>';
+        else x += '<c r="' + ref + '" s="' + s + '" t="str"><f>' + xe(c.f) + '</f><v>' + xe(c.v == null ? '' : c.v) + '</v></c>';
+      } else if (typeof c.v === 'number' && isFinite(c.v)) x += '<c r="' + ref + '" s="' + s + '"><v>' + c.v + '</v></c>';
+      else if (c.v === '' || c.v === undefined || c.v === null) x += '<c r="' + ref + '" s="' + s + '"/>';
+      else x += '<c r="' + ref + '" s="' + s + '" t="inlineStr"><is><t xml:space="preserve">' + xe(c.v) + '</t></is></c>';
+    });
+    x += '</row>';
+  });
+  x += '</sheetData>';
+  if (sh.merges && sh.merges.length) x += '<mergeCells count="' + sh.merges.length + '">' + sh.merges.map(m => '<mergeCell ref="' + m + '"/>').join('') + '</mergeCells>';
+  x += '<pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/><pageSetup orientation="landscape" fitToHeight="0"/></worksheet>';
+  return x;
+}
+const STYLES_XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+  '<numFmts count="1"><numFmt numFmtId="165" formatCode="0.0&quot;%&quot;"/></numFmts>' +
+  '<fonts count="5"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="14"/><color rgb="FF1F6F54"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font><font><i/><sz val="10"/><color rgb="FF666666"/><name val="Calibri"/></font></fonts>' +
+  '<fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1F6F54"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE3F1EA"/><bgColor indexed="64"/></patternFill></fill></fills>' +
+  '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"><color rgb="FFBBBBBB"/></left><right style="thin"><color rgb="FFBBBBBB"/></right><top style="thin"><color rgb="FFBBBBBB"/></top><bottom style="thin"><color rgb="FFBBBBBB"/></bottom><diagonal/></border></borders>' +
+  '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+  '<cellXfs count="10">' +
+  '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+  '<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+  '<xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>' +
+  '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
+  '<xf numFmtId="3" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment vertical="top"/></xf>' +
+  '<xf numFmtId="4" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment vertical="top"/></xf>' +
+  '<xf numFmtId="165" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment vertical="top"/></xf>' +
+  '<xf numFmtId="0" fontId="3" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
+  '<xf numFmtId="0" fontId="4" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+  '<xf numFmtId="0" fontId="3" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>' +
+  '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+
+function buildWorkbook(sheets) {
+  const files = [];
+  files.push({ name: '[Content_Types].xml', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' + sheets.map((s, i) => '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('') + '</Types>' });
+  files.push({ name: '_rels/.rels', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' });
+  files.push({ name: 'xl/workbook.xml', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' + sheets.map((s, i) => '<sheet name="' + xe(s.name) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>').join('') + '</sheets></workbook>' });
+  files.push({ name: 'xl/_rels/workbook.xml.rels', data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + sheets.map((s, i) => '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>').join('') + '<Relationship Id="rId' + (sheets.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' });
+  files.push({ name: 'xl/styles.xml', data: STYLES_XML });
+  sheets.forEach((s, i) => files.push({ name: 'xl/worksheets/sheet' + (i + 1) + '.xml', data: sheetXml(s) }));
+  return zipStore(files);
+}
+
+const READ_ME = [
+  ['CHERCHER ODA BULTUM FARMERS COOPERATIVES UNION'], ['DAIRY FARM – MONTHLY, QUARTERLY AND ANNUAL REPORTING'], [],
+  ['Exported from the COBFCU Dairy Farm app. Report figures are calculated from the logs on the phone; targets, overrides and narrative were entered in the app.'],
+  ['Report milk in litres, animal numbers as head, feed in kilograms, and money in ETB.'],
+  ['Variance and Achievement % are live Excel formulas: Variance = Actual − Target; Achievement % = Actual ÷ Target × 100.'], [],
+  ['Reporting responsibility'], ['Prepared by', 'Dairy Farm Manager / Dairy Farm Supervisor'], ['Technical review', 'Dairy Production / Veterinary Officer'], ['Financial review', 'Finance Department'], ['Approval', 'Union General Manager / Authorized Management']
+];
+
+function reportSheet(db, period, settings, today) {
+  const R = reportData(db, period, settings, today);
+  const P = R.P, rep = R.rep, t = period.type;
+  const names = { month: ['Monthly Report', 'MONTHLY DAIRY FARM PERFORMANCE REPORT', 'Monthly target', 'Actual result', 'Variance (Actual-Target)', 'Remarks / explanation'], quarter: ['Quarterly Report', 'QUARTERLY DAIRY FARM PERFORMANCE REPORT', 'Quarter target', 'Quarter actual', 'Variance', 'Quarter-on-quarter trend / explanation'], year: ['Annual Report', 'ANNUAL DAIRY FARM PERFORMANCE REPORT', 'Annual target', 'Annual actual', 'Variance', 'Annual analysis / evidence'] }[t];
+  const rows = [];
+  rows.push([{ v: names[1], s: S.title }]);
+  rows.push([{ v: (settings.farmName || 'Chercher Oda Bultum Farmers Cooperatives Union'), s: S.sub }]);
+  rows.push([]);
+  const hv = headerValues(period, P, settings);
+  HEADERS[t].forEach(h => { const v = h[2] === 'auto' ? hv[h[0]] : (rep.header && rep.header[h[0]]) || ''; rows.push([{ v: h[1], s: S.label }, { v: h[2] === 'date' && v ? fmtGC(v) : v, s: S.text }]); });
+  rows.push([]);
+  rows.push({ h: 32, cells: ['Performance area', 'Indicator', 'Unit', names[2], names[3], names[4], 'Achievement %', names[5]].map(v => ({ v, s: S.header })) });
+  const firstData = rows.length + 1;
+  R.rows.forEach((r, i) => {
+    const rn = firstData + i, ns = r.dec === 0 ? S.int : S.dec;
+    const v = r.variance, a = r.ach;
+    rows.push([{ v: r.area, s: S.text }, { v: r.name, s: S.text }, { v: r.unit, s: S.text },
+      { v: r.target === null ? '' : r.target, s: ns }, { v: r.actual === null ? '' : r.actual, s: ns },
+      { v: v === null ? '' : v, s: ns, f: 'IF(AND(ISNUMBER(D' + rn + '),ISNUMBER(E' + rn + ')),E' + rn + '-D' + rn + ',"")' },
+      { v: a === null ? '' : a, s: S.pct, f: 'IF(AND(ISNUMBER(D' + rn + '),ISNUMBER(E' + rn + '),D' + rn + '<>0),E' + rn + '/D' + rn + '*100,"")' },
+      { v: r.remarks, s: S.text }]);
+  });
+  const merges = [];
+  rows.push([]);
+  const nTitle = { month: 'MANAGEMENT NARRATIVE', quarter: 'QUARTERLY ANALYSIS', year: 'ANNUAL MANAGEMENT REVIEW' }[t];
+  rows.push([{ v: nTitle, s: S.section }, { s: S.section }, { s: S.section }, { s: S.section }, { s: S.section }, { s: S.section }, { s: S.section }, { s: S.section }]);
+  NARRATIVE[t].forEach((q, i) => { const n = rows.length + 1; rows.push({ h: Math.max(30, 15 * Math.ceil(((rep.narrative && rep.narrative[i]) || '').length / 80)), cells: [{ v: (i + 1) + '. ' + q, s: S.label }, { v: (rep.narrative && rep.narrative[i]) || '', s: S.text }, { s: S.text }, { s: S.text }, { s: S.text }, { s: S.text }, { s: S.text }, { s: S.text }] }); merges.push('B' + n + ':H' + n); });
+  rows.push([]);
+  const L = REPORT_LISTS[t];
+  rows.push([{ v: L.title.toUpperCase(), s: S.section }, { s: S.section }, { s: S.section }, { s: S.section }, { s: S.section }, { s: S.section }, { s: S.section }, { s: S.section }]);
+  rows.push({ h: 30, cells: [{ v: 'No.', s: S.header }].concat(L.fields.map(f => ({ v: f[1], s: S.header }))) });
+  const list = (rep.list || []);
+  const nList = Math.max(list.length, t === 'year' ? 8 : 7);
+  for (let i = 0; i < nList; i++) { const it = list[i] || {}; rows.push([{ v: i + 1, s: S.int }].concat(L.fields.map(f => ({ v: f[2] === 'date' && it[f[0]] ? fmtGC(it[f[0]]) : (f[2] === 'number' && has(it[f[0]]) ? parseFloat(it[f[0]]) : (it[f[0]] || '')), s: f[2] === 'number' ? S.dec : S.text })))); }
+  return { name: names[0], rows, merges, widths: [22, 38, 16, 16, 16, 18, 14, 36] };
+}
+
+function logSheet(db, key) {
+  const C = COLLECTIONS[key];
+  const rows = [[{ v: C.head, s: S.title }], [{ v: C.sub, s: S.sub }], []];
+  rows.push({ h: 32, cells: C.xl.map(c => ({ v: c[0], s: S.header })) });
+  const list = db[key].slice().sort((a, b) => (a[C.dateField || 'animalId'] || '').localeCompare(b[C.dateField || 'animalId'] || '') || (a.created || 0) - (b.created || 0));
+  list.forEach((r, i) => rows.push(C.xl.map((c, ci) => { if (ci === 0) return { v: i + 1, s: S.int }; const v = c[1](r); return typeof v === 'number' ? { v, s: S.dec } : { v: v === undefined ? '' : v, s: S.text }; })));
+  return { name: C.sheet, rows, widths: C.widths, freeze: 4 };
+}
+
+function exportWorkbook(db, sel, settings, today) {
+  const sheets = [{ name: 'Read Me', rows: READ_ME.map((r, i) => r.length === 0 ? [] : r.length === 1 ? [{ v: r[0], s: i < 2 ? S.title : (i === 7 ? S.label : S.def) }] : [{ v: r[0], s: S.label }, { v: r[1], s: S.text }]), widths: [28, 60] }];
+  sheets.push(reportSheet(db, { type: 'month', y: sel.month.y, m: sel.month.m }, settings, today));
+  sheets.push(reportSheet(db, { type: 'quarter', y: sel.quarter.y, q: sel.quarter.q }, settings, today));
+  sheets.push(reportSheet(db, { type: 'year', y: sel.year.y }, settings, today));
+  ['milk', 'herd', 'breeding', 'health', 'feed', 'sales', 'actions'].forEach(k => sheets.push(logSheet(db, k)));
+  return buildWorkbook(sheets);
+}
+
+/* ---------- DB ---------- */
+function emptyDB() { return { v: 1, settings: { farmName: 'Chercher Oda Bultum Farmers Cooperatives Union', preparedBy: '', yearStart: 1, milkSource: 'milklog' }, milk: [], herd: [], breeding: [], health: [], feed: [], sales: [], actions: [], reports: {} }; }
+function normalizeDB(d) {
+  const e = emptyDB();
+  if (!d || typeof d !== 'object') return e;
+  Object.keys(e).forEach(k => { if (d[k] === undefined) d[k] = e[k]; });
+  d.settings = Object.assign({}, e.settings, d.settings);
+  return d;
+}
+let _id = 0;
+function uid() { return Date.now().toString(36) + (++_id).toString(36) + Math.random().toString(36).slice(2, 5); }
+
+/* ---------- Demo data (clearly flagged; removable) ---------- */
+function demoData(today) {
+  today = today || todayISO();
+  const D = { milk: [], herd: [], breeding: [], health: [], feed: [], sales: [], actions: [] };
+  const add = (k, r) => D[k].push(Object.assign({ id: uid(), demo: true, created: Date.now() }, r));
+  const cm = currentMonth(today), start = ecToISO(cm.y, cm.m, 1);
+  const buyers = ['Hotel Haramaya', 'Chercher Cafe', 'Local households'];
+  const n = Math.min(daysBetween(start, today) + 1, 20);
+  for (let i = 0; i < n; i++) {
+    const d = addDays(start, i);
+    ['Morning', 'Evening'].forEach((s, si) => { const prod = 90 + ((i * 7 + si * 5) % 13), rej = i % 9 === 0 && si === 0 ? 4 : 0, onf = 6, sold = prod - onf - rej; add('milk', { date: d, session: s, produced: prod, onFarm: onf, sold, rejected: rej, buyer: buyers[(i + si) % 3], price: 45, quality: i % 6 === 0 ? 'Fail' : (i % 2 ? 'Pass' : 'Not tested'), remarks: '' }); });
+  }
+  const cats = ['Lactating cow', 'Lactating cow', 'Lactating cow', 'Lactating cow', 'Lactating cow', 'Lactating cow', 'Dry cow', 'Dry cow', 'Heifer', 'Heifer', 'Calf', 'Calf', 'Bull'];
+  cats.forEach((c, i) => add('herd', { animalId: 'COB-' + pad(i + 1, 3), breed: i % 2 ? 'Holstein Friesian' : 'Cross-breed (F1)', sex: c === 'Bull' ? 'Male' : 'Female', category: c, dob: '', entryType: c === 'Calf' && i === 11 ? 'Born on farm' : 'Opening stock', entryDate: c === 'Calf' && i === 11 ? start : '', exitType: 'No', exitDate: '', remarks: '' }));
+  add('herd', { animalId: 'COB-014', breed: 'Local (Zebu)', sex: 'Female', category: 'Calf', dob: '', entryType: 'Opening stock', entryDate: '', exitType: 'Died', exitDate: addDays(start, 3), remarks: 'Pneumonia' });
+  add('breeding', { date: addDays(today, -60), animalId: 'COB-002', heat: 'Y', service: 'AI', sire: 'HF-221', tech: 'Demo technician', pdDate: addDays(today, -15), result: 'Pregnant', calvingDate: '', outcome: '', remarks: '' });
+  add('breeding', { date: addDays(today, -50), animalId: 'COB-005', heat: 'Y', service: 'AI', sire: 'HF-305', tech: 'Demo technician', pdDate: '', result: 'Pending', calvingDate: '', outcome: '', remarks: '' });
+  add('breeding', { date: addDays(today, -4), animalId: 'COB-003', heat: 'Y', service: 'Natural', sire: 'Bull COB-013', tech: '', pdDate: '', result: 'Pending', calvingDate: '', outcome: '', remarks: '' });
+  add('health', { date: addDays(start, 2), kind: 'Treatment', animal: 'COB-014', head: 1, condition: 'Pneumonia', action: 'Antibiotic course', medicine: 'Oxytetracycline', dose: 'Demo dose', vet: 'Demo vet', outcome: 'Died', cost: 350, remarks: '' });
+  add('health', { date: addDays(start, 5), kind: 'Vaccination', animal: 'Whole herd', head: 13, condition: 'FMD', action: 'Vaccination', medicine: 'FMD vaccine', dose: '', vet: 'Demo vet', outcome: 'Done', cost: 1300, remarks: '' });
+  add('feed', { date: addDays(start, 1), type: 'Concentrate', kind: 'Concentrate', opening: 400, received: 1000, issued: 300, supplier: 'Demo supplier', unitCost: 22, remarks: '' });
+  add('feed', { date: addDays(start, 1), type: 'Hay', kind: 'Forage', opening: 800, received: 1500, issued: 450, supplier: 'Demo supplier', unitCost: 6, remarks: '' });
+  add('sales', { date: addDays(start, 2), product: 'Yoghurt', qty: 40, unit: 'L', price: 90, customer: 'Chercher Cafe', cash: 2000, receipt: 'D-001', remarks: 'Partly paid' });
+  add('sales', { date: addDays(start, 4), product: 'Cull cow', qty: 1, unit: 'head', price: 30000, customer: 'Demo trader', cash: 30000, receipt: 'D-002', remarks: '' });
+  add('actions', { date: addDays(today, -10), issue: 'Cooling tank breakdown', root: 'Compressor failure', action: 'Repair compressor', owner: 'Farm manager', deadline: addDays(today, -2), budget: 'Demo budget', status: 'In progress', done: '', remarks: '' });
+  return D;
+}
+
+const api = { EC_MONTHS, gregToJDN, jdnToGreg, ecToJDN, jdnToEC, isoToEC, ecToISO, ecMonthDays, addDays, daysBetween, todayISO, fmtEC, fmtGC, yearMonths, resolvePeriod, currentMonth, currentQuarter, currentYearLabel, monthKey, COLLECTIONS, LOG_KEYS, INDICATORS, NARRATIVE, REPORT_LISTS, HEADERS, STATUS, HERD_CATS, computeAuto, reportData, fmtNum, headerValues, alerts, validate, exportWorkbook, buildWorkbook, zipStore, emptyDB, normalizeDB, uid, demoData, num, has, isServed, presentAt };
+if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.Core = api;
+})(typeof self !== 'undefined' ? self : globalThis);
+</script>
+<script>/* COBFCU Dairy Farm app - UI. Uses window.Core (core.js). Data stays on the device (localStorage) and can optionally sync to Google Firebase / Firestore. */
+(function () {
+'use strict';
+const C = window.Core;
+const KEY = 'cobfcu_dairy_v1';
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const num = C.num, has = C.has, fmt = C.fmtNum;
+
+let db, today = C.todayISO(), memStore = null;
+const state = { tab: 'home', logKey: 'milk', filter: {}, limit: {}, actFilter: 'all', rtype: 'month', sel: null, q: '' };
+let installEvt = null;
+
+function load() {
+  let raw = null;
+  try { raw = localStorage.getItem(KEY); } catch (e) { raw = memStore; }
+  try { db = C.normalizeDB(raw ? JSON.parse(raw) : null); } catch (e) { db = C.emptyDB(); }
+}
+function persist() {
+  const s = JSON.stringify(db);
+  try { localStorage.setItem(KEY, s); } catch (e) { memStore = s; toast('Could not save to device storage. Export a backup now.'); }
+}
+function save() { persist(); cloudPush(); }
+
+/* ---------- Cloud sync (Google Firebase: Anonymous Auth + Firestore) ----------
+   Local-first: the phone always saves to localStorage; Firestore mirrors it.
+   Each record is one document at farms/{farmCode}/records/{collection_id}; settings+reports are farms/{farmCode}/meta/main. */
+const CFG_KEY = 'cobfcu_cloud_v1', FB = 'https://www.gstatic.com/firebasejs/10.14.1/';
+const COLS = ['milk', 'herd', 'breeding', 'health', 'feed', 'sales', 'actions'];
+const cloud = { mods: null, app: null, fs: null, farm: '', on: false, started: false, init: { rec: false, meta: false }, synced: {}, inflight: 0, status: 'off', msg: '', timer: null, rtimer: null, unsubs: [] };
+function cloudCfg() { try { const c = JSON.parse(localStorage.getItem(CFG_KEY)); return c && c.firebase && c.farm ? c : null; } catch (e) { return null; } }
+function cloudLabel() {
+  if (cloud.status === 'off') return 'Not connected. Data stays on this phone.';
+  if (cloud.status === 'connecting') return 'Connecting…';
+  if (cloud.status === 'signin') return 'Sign in with your Google account to sync.';
+  if (cloud.status === 'error') return 'Sync problem: ' + cloud.msg;
+  if (!navigator.onLine) return 'Offline. Changes will sync when you are back online.';
+  const em = cloud.auth && cloud.auth.currentUser && cloud.auth.currentUser.email ? ' · ' + cloud.auth.currentUser.email : '';
+  return (cloud.inflight ? 'Syncing…' : 'Synced ✓') + em;
+}
+function setCloud(st, msg) { cloud.status = st; cloud.msg = msg || ''; const el = $('#cloudstat'); if (el) el.textContent = cloudLabel(); }
+function cloudErr(e) {
+  const c = (e && e.code) || '';
+  if (c === 'permission-denied') return 'This Google account is not allowed. Add its email to the Firestore rules.';
+  if (c === 'auth/operation-not-allowed' || c === 'auth/admin-restricted-operation') return 'Turn on Google sign-in in Firebase Authentication.';
+  if (c === 'auth/unauthorized-domain') return 'Add this website address under Authentication → Settings → Authorized domains.';
+  if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') return 'Sign-in was cancelled.';
+  if (c === 'auth/network-request-failed') return 'No connection yet. Will retry.';
+  if (c === 'auth/invalid-api-key' || c === 'auth/api-key-not-valid') return 'The Firebase API key is not valid.';
+  return c || (e && e.message) || 'unknown error';
+}
+const cdoc = (k, id) => k + '_' + String(id).replace(/[\/\s]/g, '_');
+function cloudLocal() {
+  const m = {};
+  COLS.forEach(k => db[k].forEach(r => { if (r && r.id) m[cdoc(k, r.id)] = { k, d: JSON.stringify(r) }; }));
+  m.meta = { d: JSON.stringify({ settings: db.settings, reports: db.reports }) };
+  return m;
+}
+function cloudPush() { if (!cloud.on) return; clearTimeout(cloud.timer); cloud.timer = setTimeout(cloudFlush, 500); }
+function cloudFlush() {
+  if (!cloud.on || !cloud.init.rec || !cloud.init.meta) return;
+  const M = cloud.mods.fs, loc = cloudLocal(), ops = [];
+  Object.keys(loc).forEach(id => { if (cloud.synced[id] !== loc[id].d) ops.push({ id, v: loc[id] }); });
+  Object.keys(cloud.synced).forEach(id => { if (!loc[id]) ops.push({ id, del: true }); });
+  for (let i = 0; i < ops.length; i += 400) {
+    const chunk = ops.slice(i, i + 400), b = M.writeBatch(cloud.fs);
+    chunk.forEach(o => {
+      const ref = o.id === 'meta' ? M.doc(cloud.fs, 'farms', cloud.farm, 'meta', 'main') : M.doc(cloud.fs, 'farms', cloud.farm, 'records', o.id);
+      if (o.del) { b.delete(ref); delete cloud.synced[o.id]; }
+      else { b.set(ref, o.id === 'meta' ? { d: o.v.d, t: Date.now() } : { k: o.v.k, d: o.v.d, t: Date.now() }); cloud.synced[o.id] = o.v.d; }
+    });
+    cloud.inflight++; setCloud('live');
+    b.commit().then(() => { cloud.inflight--; setCloud('live'); })
+      .catch(e => { cloud.inflight--; chunk.forEach(o => { if (!o.del) delete cloud.synced[o.id]; }); setCloud('error', cloudErr(e)); });
+  }
+}
+function cloudApplyRec(docId, data) {
+  let rec; try { rec = JSON.parse(data.d); } catch (e) { return false; }
+  if (!COLS.includes(data.k) || !rec || !rec.id) return false;
+  cloud.synced[docId] = data.d;
+  const list = db[data.k], i = list.findIndex(r => r.id === rec.id);
+  if (i >= 0) { if (JSON.stringify(list[i]) === data.d) return false; list[i] = rec; } else list.push(rec);
+  return true;
+}
+function cloudApplyDel(docId, data) {
+  delete cloud.synced[docId];
+  try {
+    const rec = JSON.parse(data.d), list = db[data.k], i = list ? list.findIndex(r => r.id === rec.id) : -1;
+    if (i >= 0) { list.splice(i, 1); return true; }
+  } catch (e) { }
+  return false;
+}
+function cloudSignInScreen(hide) {
+  let el = document.getElementById('cloudgate');
+  if (hide) { if (el) el.remove(); return; }
+  if (el) return;
+  el = document.createElement('div'); el.id = 'cloudgate';
+  el.style.cssText = 'position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px';
+  el.innerHTML = '<div class="card" style="max-width:360px;width:100%;text-align:center"><h2>COBFCU Dairy Farm</h2><p class="small muted">Sign in with your Google account to sync your data across phones.</p><button class="btn full" id="cg_in" style="margin-bottom:8px">Sign in with Google</button><button class="btn sec full" id="cg_skip">Continue offline</button><div id="cg_msg" class="small" style="margin-top:8px;color:var(--bad)"></div></div>';
+  document.body.appendChild(el);
+  el.querySelector('#cg_in').onclick = cloudGoogle;
+  el.querySelector('#cg_skip').onclick = () => el.remove();
+}
+async function cloudGoogle() {
+  const A = cloud.mods && cloud.mods.auth; if (!A || !cloud.auth) { toast('Still loading, try again'); return; }
+  const prov = new A.GoogleAuthProvider();
+  try { await A.signInWithPopup(cloud.auth, prov); }
+  catch (e) {
+    if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') { try { await A.signInWithRedirect(cloud.auth, prov); return; } catch (e2) { e = e2; } }
+    const m = document.getElementById('cg_msg'); if (m) m.textContent = cloudErr(e); else toast(cloudErr(e));
+    return;
+  }
+  cloud.started = false; cloudStart();
+}
+function cloudRender() {
+  clearTimeout(cloud.rtimer);
+  const go = () => {
+    const a = document.activeElement;
+    if (sheetOpen || (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) { cloud.rtimer = setTimeout(go, 1500); return; }
+    render();
+  };
+  cloud.rtimer = setTimeout(go, 250);
+}
+async function cloudStart() {
+  const c = cloudCfg(); if (!c || cloud.started) return;
+  cloud.started = true; cloud.farm = c.farm; setCloud('connecting');
+  try {
+    if (!cloud.mods) {
+      const [A, U, F] = await Promise.all([import(FB + 'firebase-app.js'), import(FB + 'firebase-auth.js'), import(FB + 'firebase-firestore.js')]);
+      cloud.mods = { app: A, auth: U, fs: F };
+      cloud.app = A.initializeApp(c.firebase);
+      cloud.fs = F.initializeFirestore(cloud.app, { localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }) });
+    }
+    const A = cloud.mods.auth, F = cloud.mods.fs;
+    const auth = A.getAuth(cloud.app); cloud.auth = auth;
+    try { await A.getRedirectResult(auth); } catch (e) { setCloud('error', cloudErr(e)); }
+    if (auth.authStateReady) await auth.authStateReady();
+    if (!auth.currentUser) { cloud.started = false; setCloud('signin'); cloudSignInScreen(); return; }
+    cloudSignInScreen(true);
+    cloud.on = true; cloud.init = { rec: false, meta: false };
+    const ready = snap => !snap.metadata.fromCache || !navigator.onLine;
+    const onErr = e => setCloud('error', cloudErr(e));
+    cloud.unsubs.push(F.onSnapshot(F.collection(cloud.fs, 'farms', c.farm, 'records'), { includeMetadataChanges: true }, snap => {
+      let changed = false;
+      snap.docChanges().forEach(ch => {
+        const d = ch.doc.data();
+        if (ch.type === 'removed') { if (cloudApplyDel(ch.doc.id, d)) changed = true; return; }
+        if (ch.doc.metadata.hasPendingWrites) return;
+        if (cloudApplyRec(ch.doc.id, d)) changed = true;
+      });
+      if (changed) { persist(); cloudRender(); }
+      if (!cloud.init.rec && ready(snap)) { cloud.init.rec = true; cloudFlush(); }
+    }, onErr));
+    cloud.unsubs.push(F.onSnapshot(F.doc(cloud.fs, 'farms', c.farm, 'meta', 'main'), { includeMetadataChanges: true }, snap => {
+      if (snap.exists() && !snap.metadata.hasPendingWrites) {
+        const d = snap.data();
+        if (cloud.synced.meta !== d.d) {
+          cloud.synced.meta = d.d;
+          try {
+            const p = JSON.parse(d.d);
+            if (JSON.stringify({ settings: db.settings, reports: db.reports }) !== d.d) {
+              db.settings = Object.assign(C.emptyDB().settings, p.settings); db.reports = p.reports || {};
+              persist(); cloudRender();
+            }
+          } catch (e) { }
+        }
+      }
+      if (!cloud.init.meta && ready(snap)) { cloud.init.meta = true; cloudFlush(); }
+    }, onErr));
+    setCloud('live');
+  } catch (e) { cloud.started = false; cloud.on = false; setCloud('error', cloudErr(e)); }
+}
+function parseCloudInput(s) {
+  if (!s) return null;
+  try {
+    if (s.indexOf('COBFCU1:') === 0) { const o = JSON.parse(atob(s.slice(8))); return o && o.firebase && o.farm ? o : null; }
+    const a = s.indexOf('{'), b = s.lastIndexOf('}'); if (a < 0 || b < a) return null;
+    const t = s.slice(a, b + 1).replace(/^\s*\/\/.*$/gm, '').replace(/([{,]\s*)([A-Za-z_$][\w$]*)\s*:/g, '$1"$2":').replace(/'/g, '"').replace(/,\s*}/g, '}');
+    const f = JSON.parse(t); return f.apiKey && f.projectId ? { firebase: f } : null;
+  } catch (e) { return null; }
+}
+function genFarm() { const a = new Uint8Array(15); crypto.getRandomValues(a); return Array.from(a, b => 'abcdefghijkmnpqrstuvwxyz23456789'[b % 32]).join(''); }
+function cloudCard() {
+  const c = cloudCfg();
+  let h = '<div class="card"><h2>Cloud sync (Google Firebase)</h2><div class="small" style="margin-bottom:10px"><b id="cloudstat">' + esc(cloudLabel()) + '</b></div>';
+  if (c) {
+    h += '<div class="small muted" style="margin-bottom:10px">Project: ' + esc(c.firebase.projectId || '?') + '<br>Farm code: <b>' + esc(c.farm) + '</b></div>' +
+      (cloud.status === 'signin' ? '<button class="btn full" data-act="cloudsignin" style="margin-bottom:8px">Sign in with Google</button>' : '') +
+      '<button class="btn full" data-act="cloudshare" style="margin-bottom:8px">Copy setup code for another phone</button>' +
+      '<button class="btn sec full" data-act="cloudsync" style="margin-bottom:8px">Sync now</button>' +
+      '<button class="btn sec full" data-act="cloudsignout" style="margin-bottom:8px">Sign out of Google</button>' +
+      '<button class="btn del full" data-act="clouddisc">Disconnect this phone</button>' +
+      '<div class="small muted" style="margin-top:8px">Changes sync automatically and also work offline. Only the Google accounts listed in your Firestore rules can read or edit this data.</div>';
+  } else {
+    h += '<label class="f"><span>Firebase config or setup code</span><textarea id="cl_cfg" rows="5" placeholder="Paste the firebaseConfig from Firebase, or a setup code from another phone"></textarea></label>' +
+      '<label class="f"><span>Farm code (optional)</span><input id="cl_farm" autocapitalize="off" placeholder="Leave empty to create a new one"><em>Phones with the same farm code share the same data.</em></label>' +
+      '<button class="btn full" data-act="cloudconnect" style="margin-bottom:8px">Connect</button>' +
+      '<details class="small"><summary>How to set up Firebase (one time)</summary><ol style="padding-left:18px;margin:8px 0">' +
+      '<li>Open console.firebase.google.com and create a project.</li>' +
+      '<li>Build → Firestore Database → Create database.</li>' +
+      '<li>Build → Authentication → Sign-in method → enable <b>Google</b>. Under Settings → Authorized domains, add the website address where this app is hosted.</li>' +
+      '<li>Firestore → Rules → paste the rules below → Publish.</li>' +
+      '<li>Project settings → Your apps → Web app (&lt;/&gt;) → copy the <b>firebaseConfig</b> and paste it above.</li></ol>' +
+      '<pre style="white-space:pre-wrap;font-size:12px;background:var(--bg);padding:8px;border-radius:8px">rules_version = \'2\';\nservice cloud.firestore {\n  match /databases/{db}/documents {\n    match /farms/{farm}/{doc=**} {\n      allow read, write: if request.auth != null\n        && request.auth.token.email in [\'abdurofmohammed@gmail.com\', \'fenet5875@gmail.com\'];\n    }\n  }\n}</pre>' +
+      '<div class="muted">Joining a farm that already has data? Connect a fresh phone: the cloud data replaces its settings and reports, and its own records are added.</div></details>';
+  }
+  return h + '</div>';
+}
+
+function initSel() {
+  const cm = C.currentMonth(today), cq = C.currentQuarter(today, db.settings);
+  state.sel = { month: cm, quarter: cq, year: { y: cq.y } };
+}
+let toastT;
+function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2800); }
+
+/* ---------- helpers ---------- */
+const ecShort = iso => iso ? C.fmtEC(iso, true) : '';
+function monthOf(iso) { const e = C.isoToEC(iso); return e.y + ':' + e.m; }
+function sortList(key, list) {
+  const df = C.COLLECTIONS[key].dateField;
+  return list.slice().sort((a, b) => df ? ((b[df] || '').localeCompare(a[df] || '') || (b.created || 0) - (a.created || 0)) : (a.animalId || '').localeCompare(b.animalId || '', undefined, { numeric: true }));
+}
+function filtered(key) {
+  let list = db[key];
+  const df = C.COLLECTIONS[key].dateField, f = state.filter[key] || 'all';
+  if (df && f !== 'all') list = list.filter(r => r[df] && monthOf(r[df]) === f);
+  if (key === 'herd' && state.q) { const q = state.q.toLowerCase(); list = list.filter(r => (r.animalId + ' ' + r.breed + ' ' + r.category).toLowerCase().includes(q)); }
+  if (key === 'actions') {
+    const a = state.actFilter;
+    if (a === 'open') list = list.filter(r => r.status !== 'Completed' && r.status !== 'Cancelled');
+    else if (a === 'overdue') list = list.filter(r => isOverdue(r));
+    else if (a === 'done') list = list.filter(r => r.status === 'Completed');
+  }
+  return sortList(key, list);
+}
+const isOverdue = r => r.deadline && r.deadline < today && r.status !== 'Completed' && r.status !== 'Cancelled';
+function monthOptions(key) {
+  const df = C.COLLECTIONS[key].dateField; const set = new Set();
+  db[key].forEach(r => { if (r[df]) set.add(monthOf(r[df])); });
+  return Array.from(set).sort((a, b) => { const [ay, am] = a.split(':').map(Number), [by, bm] = b.split(':').map(Number); return by - ay || bm - am; });
+}
+const monthLabel = k => { const [y, m] = k.split(':').map(Number); return C.EC_MONTHS[m - 1] + ' ' + y; };
+
+/* ---------- record summaries ---------- */
+function summary(key, r) {
+  const E = ecShort;
+  switch (key) {
+    case 'milk': return { t: E(r.date) + ' · ' + esc(r.session), s: 'Sold ' + fmt(r.sold, 1) + ' L' + (r.buyer ? ' · ' + esc(r.buyer) : '') + (num(r.rejected) ? ' <span class="tag warn">' + fmt(r.rejected, 1) + ' L rejected</span>' : '') + (r.quality === 'Fail' ? ' <span class="tag bad">Quality fail</span>' : r.quality === 'Pass' ? ' <span class="tag good">Pass</span>' : ''), r: fmt(r.produced, 1) + ' L' };
+    case 'herd': { const out = r.exitType && r.exitType !== 'No'; return { t: esc(r.animalId), s: esc(r.category) + (r.breed ? ' · ' + esc(r.breed) : ''), r: out ? '<span class="tag bad">' + esc(r.exitType) + '</span>' : '<span class="tag good">In herd</span>' }; }
+    case 'breeding': { const exp = (C.isServed(r) && r.result !== 'Not pregnant' && r.date) ? C.addDays(r.date, 283) : ''; return { t: esc(r.animalId) + ' · ' + esc(r.service), s: E(r.date) + ' · ' + esc(r.result) + (r.outcome ? ' · ' + esc(r.outcome) : ''), r: r.calvingDate ? 'Calved ' + E(r.calvingDate) : (exp ? '<span class="small muted">Due ' + E(exp) + '</span>' : '') }; }
+    case 'health': return { t: esc(r.animal) + (num(r.head) > 1 ? ' ×' + num(r.head) : ''), s: esc(r.kind) + (r.condition ? ' · ' + esc(r.condition) : '') + ' · ' + E(r.date), r: has(r.cost) ? fmt(r.cost, 2) + ' ETB' : '' };
+    case 'feed': return { t: esc(r.type), s: E(r.date) + ' · used ' + fmt(r.issued, 1) + ' kg · received ' + fmt(r.received, 1) + ' kg', r: fmt(num(r.opening) + num(r.received) - num(r.issued), 1) + ' kg left' };
+    case 'sales': { const tot = num(r.qty) * num(r.price), cr = Math.max(0, tot - num(r.cash)); return { t: esc(r.product) + (r.customer ? ' · ' + esc(r.customer) : ''), s: E(r.date) + ' · ' + fmt(r.qty, 1) + ' ' + esc(r.unit) + (cr > 0 ? ' <span class="tag warn">Owes ' + fmt(cr, 2) + '</span>' : ''), r: fmt(tot, 2) + ' ETB' }; }
+    case 'actions': { const od = isOverdue(r); return { t: esc((r.issue || '').slice(0, 70)), s: (r.owner ? esc(r.owner) + ' · ' : '') + (r.deadline ? 'due ' + E(r.deadline) : 'no deadline'), r: od ? '<span class="tag bad">Overdue</span>' : '<span class="tag ' + (r.status === 'Completed' ? 'good' : r.status === 'In progress' ? '' : 'warn') + '">' + esc(r.status) + '</span>' }; }
+  }
+}
+function totalsLine(key, list) {
+  const sum = f => list.reduce((s, r) => s + num(f(r)), 0);
+  switch (key) {
+    case 'milk': return fmt(sum(r => r.produced), 1) + ' L produced · ' + fmt(sum(r => r.sold), 1) + ' L sold · ' + fmt(sum(r => num(r.sold) * num(r.price)), 2) + ' ETB';
+    case 'feed': return fmt(sum(r => r.received), 1) + ' kg received · ' + fmt(sum(r => r.issued), 1) + ' kg used · ' + fmt(sum(r => num(r.received) * num(r.unitCost)), 2) + ' ETB';
+    case 'sales': return fmt(sum(r => num(r.qty) * num(r.price)), 2) + ' ETB sales · owed ' + fmt(sum(r => Math.max(0, num(r.qty) * num(r.price) - num(r.cash))), 2) + ' ETB';
+    case 'health': return list.length + ' records · ' + fmt(sum(r => r.cost), 2) + ' ETB';
+    case 'herd': return list.filter(r => !(r.exitType && r.exitType !== 'No')).length + ' in herd · ' + list.length + ' registered';
+    default: return list.length + ' records';
+  }
+}
+
+/* ---------- views ---------- */
+const NAV = [['home', 'Home', '<path d="M3 11l9-8 9 8M5 10v10h14V10"/>'], ['logs', 'Logs', '<path d="M5 4h14v16H5zM9 9h6M9 13h6M9 17h3"/>'], ['reports', 'Reports', '<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>'], ['actions', 'Actions', '<path d="M5 12l4 4 10-10"/>'], ['more', 'More', '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>']];
+const TITLES = { logs: 'Daily logs', reports: 'Reports', actions: 'Corrective actions', more: 'More' };
+
+function render() {
+  today = C.todayISO();
+  let body = '', title = 'COBFCU Dairy Farm', sub = C.fmtEC(today) + ' · ' + C.fmtGC(today);
+  if (state.tab === 'home') body = viewHome();
+  else if (state.tab === 'logs') { title = TITLES.logs; body = viewLog(state.logKey); }
+  else if (state.tab === 'reports') { title = TITLES.reports; body = viewReports(); }
+  else if (state.tab === 'actions') { title = TITLES.actions; body = viewLog('actions'); }
+  else { title = TITLES.more; body = viewMore(); }
+  const keepScroll = window.scrollY;
+  $('#app').innerHTML = '<div class="top"><h1>' + esc(title) + '</h1><small>' + esc(sub) + '</small></div><main>' + body + '</main>' +
+    '<nav>' + NAV.map(n => '<button data-act="tab" data-tab="' + n[0] + '" class="' + (state.tab === n[0] ? 'on' : '') + '"><svg viewBox="0 0 24 24">' + n[2] + '</svg>' + n[1] + '</button>').join('') + '</nav>';
+  window.scrollTo(0, keepScroll);
+}
+
+function viewHome() {
+  const cm = C.currentMonth(today);
+  const R = C.reportData(db, { type: 'month', y: cm.y, m: cm.m }, db.settings, today);
+  const g = k => R.rows.find(r => r.k === k);
+  const st = (k, label, unit) => { const r = g(k); return '<div class="stat"><b>' + fmt(r.actual, r.dec) + (r.actual !== null && unit ? ' <small>' + unit + '</small>' : '') + '</b><span>' + label + '</span></div>'; };
+  const rec = db.sales.reduce((s, r) => s + Math.max(0, num(r.qty) * num(r.price) - num(r.cash)), 0);
+  // 14-day chart
+  const days = []; for (let i = 13; i >= 0; i--) days.push(C.addDays(today, -i));
+  const vals = days.map(d => db.milk.filter(r => r.date === d).reduce((s, r) => s + num(r.produced), 0));
+  const mx = Math.max.apply(null, vals.concat([1]));
+  const chart = '<div class="bars">' + vals.map((v, i) => '<i title="' + days[i] + ': ' + fmt(v, 0) + ' L" style="height:' + Math.max(2, Math.round(100 * v / mx)) + '%"></i>').join('') + '</div><div class="bars-l">' + days.map(d => '<span>' + C.isoToEC(d).d + '</span>').join('') + '</div>';
+  const al = C.alerts(db, today);
+  return '<div class="quick"><button class="btn" data-act="add" data-key="milk">+ Milk</button><button class="btn sec" data-act="add" data-key="health">+ Health</button><button class="btn sec" data-act="add" data-key="feed">+ Feed</button><button class="btn sec" data-act="add" data-key="sales">+ Sale</button></div>' +
+    '<div class="card"><h2>' + C.EC_MONTHS[cm.m - 1] + ' ' + cm.y + ' E.C. so far</h2><div class="grid">' +
+    st('milkTotal', 'Milk produced', 'L') + st('milkPerDay', 'Average per day', 'L') + st('milkRevenue', 'Milk revenue', 'ETB') + st('herdTotal', 'Herd size', '') + st('lactating', 'Lactating cows', '') +
+    '<div class="stat"><b>' + fmt(rec, 2) + ' <small>ETB</small></b><span>Owed by customers</span></div></div></div>' +
+    '<div class="card"><h2>Milk produced, last 14 days (E.C. day)</h2>' + chart + '</div>' +
+    '<div class="card"><h2>Needs attention</h2>' + (al.length ? al.map(a => '<div class="alert ' + a.level + '" data-act="go" data-go="' + a.go + '">' + esc(a.text) + '</div>').join('') : '<div class="muted small">Nothing urgent.</div>') + '</div>';
+}
+
+function viewLog(key) {
+  const C0 = C.COLLECTIONS[key];
+  let head = '';
+  if (key !== 'actions') head += '<div class="chips">' + C.LOG_KEYS.map(k => '<button class="chip ' + (k === key ? 'on' : '') + '" data-act="log" data-key="' + k + '">' + C.COLLECTIONS[k].title + '</button>').join('') + '</div>';
+  else head += '<div class="chips">' + [['all', 'All'], ['open', 'Open'], ['overdue', 'Overdue'], ['done', 'Completed']].map(f => '<button class="chip ' + (state.actFilter === f[0] ? 'on' : '') + '" data-act="actf" data-f="' + f[0] + '">' + f[1] + '</button>').join('') + '</div>';
+  if (C0.dateField && key !== 'actions') {
+    const opts = monthOptions(key), cur = state.filter[key] || 'all';
+    head += '<select class="inp" style="margin-bottom:10px" data-act="filter" data-key="' + key + '"><option value="all">All dates</option>' + opts.map(o => '<option value="' + o + '"' + (o === cur ? ' selected' : '') + '>' + monthLabel(o) + ' E.C.</option>').join('') + '</select>';
+  }
+  if (key === 'herd') head += '<input class="inp" style="margin-bottom:10px" placeholder="Search animal ID, breed, category" value="' + esc(state.q) + '" data-act="search">';
+  const list = filtered(key), lim = state.limit[key] || 60;
+  let body = '<div class="small muted" style="margin:0 2px 8px">' + esc(totalsLine(key, list)) + '</div>';
+  if (!list.length) body += '<div class="card muted">No records yet. Tap + to add one.</div>';
+  list.slice(0, lim).forEach(r => { const s = summary(key, r); body += '<div class="rec" data-act="edit" data-key="' + key + '" data-id="' + r.id + '"><div><div class="t">' + s.t + '</div><div class="s">' + s.s + '</div></div><div class="r">' + s.r + '</div></div>'; });
+  if (list.length > lim) body += '<button class="btn sec full" data-act="more" data-key="' + key + '">Show more (' + (list.length - lim) + ')</button>';
+  return head + body + '<button class="fab" aria-label="Add record" data-act="add" data-key="' + key + '">+</button>';
+}
+
+function periodOf(t) {
+  const s = state.sel;
+  return t === 'month' ? { type: 'month', y: s.month.y, m: s.month.m } : t === 'quarter' ? { type: 'quarter', y: s.quarter.y, q: s.quarter.q } : { type: 'year', y: s.year.y };
+}
+function yearChoices() {
+  const cy = C.currentYearLabel(today, db.settings), set = new Set();
+  for (let y = cy - 4; y <= cy + 1; y++) set.add(y);
+  ['milk', 'sales', 'feed', 'health', 'breeding', 'actions'].forEach(k => db[k].forEach(r => { if (r.date) set.add(C.isoToEC(r.date).y); }));
+  Object.keys(db.reports).forEach(k => set.add(parseInt(k.split(':')[1], 10)));
+  Object.values(state.sel).forEach(v => set.add(v.y));
+  return Array.from(set).sort((a, b) => b - a);
+}
+function achClass(r) {
+  if (r.ach === null) return '';
+  if (r.lowerBetter) return r.ach <= 100 ? 'good' : 'bad';
+  return r.ach >= 100 ? 'good' : r.ach >= 80 ? 'warn' : 'bad';
+}
+function viewReports() {
+  const t = state.rtype, period = periodOf(t);
+  const R = C.reportData(db, period, db.settings, today), rep = R.rep, P = R.P;
+  const T = { month: 'Monthly', quarter: 'Quarterly', year: 'Annual' };
+  let h = '<div class="seg">' + ['month', 'quarter', 'year'].map(x => '<button class="' + (t === x ? 'on' : '') + '" data-act="rtype" data-t="' + x + '">' + T[x] + '</button>').join('') + '</div>';
+  h += '<div class="row" style="margin-bottom:10px"><select class="inp" data-act="rsel" data-w="y">' + yearChoices().map(y => '<option' + (y === period.y ? ' selected' : '') + '>' + y + '</option>').join('') + '</select>';
+  if (t === 'month') h += '<select class="inp" data-act="rsel" data-w="m">' + C.EC_MONTHS.map((n, i) => '<option value="' + (i + 1) + '"' + (i + 1 === period.m ? ' selected' : '') + '>' + n + '</option>').join('') + '</select>';
+  if (t === 'quarter') h += '<select class="inp" data-act="rsel" data-w="q">' + [1, 2, 3, 4].map(q => { const ms = C.resolvePeriod({ type: 'quarter', y: period.y, q }, db.settings).months; return '<option value="' + q + '"' + (q === period.q ? ' selected' : '') + '>Q' + q + ' (' + C.EC_MONTHS[ms[0].m - 1].slice(0, 3) + '–' + C.EC_MONTHS[ms[ms.length - 1].m - 1].slice(0, 3) + ')</option>'; }).join('') + '</select>';
+  h += '</div>';
+  h += '<div class="card"><h2>' + esc(P.label) + '</h2><div class="small muted">' + esc(P.gcLabel) + ' · ' + P.days + ' days</div><hr>';
+  const hv = C.headerValues(period, P, db.settings);
+  C.HEADERS[t].forEach(f => {
+    if (f[2] === 'auto') h += '<div class="row small" style="margin-bottom:6px"><span class="muted">' + f[1] + '</span><span style="text-align:right">' + esc(hv[f[0]]) + '</span></div>';
+    else {
+      const val = (rep.header && rep.header[f[0]] !== undefined) ? rep.header[f[0]] : (f[0] === 'preparedBy' ? db.settings.preparedBy : '');
+      h += '<label class="f"><span>' + f[1] + '</span><input ' + (f[2] === 'date' ? 'type="date"' : 'type="text"') + ' value="' + esc(val || '') + '" data-rep="header:' + f[0] + '"></label>';
+    }
+  });
+  if (t === 'month') h += '<label class="f"><span>Other operating expenses this month (ETB) — labour, utilities, etc.</span><input type="number" inputmode="decimal" min="0" value="' + esc(rep.other === undefined ? '' : rep.other) + '" data-rep="other:" data-rerender="1"><em>Added to feed and health costs to give total operating expenses.</em></label>';
+  else h += '<div class="row small" style="margin-bottom:6px"><span class="muted">Other operating expenses (sum of months)</span><span style="text-align:right">' + fmt(P.otherExpenses, 2) + ' ETB</span></div>';
+  h += '</div>';
+
+  h += '<div class="card"><h2>Performance indicators</h2><div class="small muted" style="margin-bottom:6px"><span class="autodot"></span>calculated from your logs · tap a row to set target, override or add remarks</div><table class="tbl"><thead><tr><th>Indicator</th><th>Target</th><th>Actual</th><th>Var.</th><th>Ach.</th></tr></thead><tbody>';
+  let area = '';
+  R.rows.forEach(r => {
+    if (r.area !== area) { area = r.area; h += '<tr class="area"><td colspan="5">' + esc(area) + '</td></tr>'; }
+    const isAuto = r.override === null && r.auto !== null;
+    h += '<tr class="ind" data-act="ind" data-k="' + r.k + '"><td>' + esc(r.name) + '<span class="u">' + esc(r.unit) + (r.remarks ? ' · ✎' : '') + '</span></td><td>' + (r.target === null ? '—' : fmt(r.target, r.dec)) + '</td><td>' + (isAuto ? '<span class="autodot"></span>' : '') + fmt(r.actual, r.dec) + '</td><td>' + (r.variance === null ? '—' : (r.variance > 0 ? '+' : '') + fmt(r.variance, r.dec)) + '</td><td class="' + achClass(r) + '">' + (r.ach === null ? '—' : fmt(r.ach, 1) + '%') + '</td></tr>';
+  });
+  h += '</tbody></table></div>';
+
+  h += '<div class="card"><h2>' + { month: 'Management narrative', quarter: 'Quarterly analysis', year: 'Annual management review' }[t] + '</h2>';
+  C.NARRATIVE[t].forEach((q, i) => { const v = (rep.narrative && rep.narrative[i]) || ''; h += '<details' + (v ? ' open' : '') + '><summary>' + (i + 1) + '. ' + esc(q) + (v ? ' ✓' : '') + '</summary><textarea class="inp" rows="4" data-rep="narr:' + i + '" placeholder="Write here…">' + esc(v) + '</textarea></details>'; });
+  h += '</div>';
+
+  const L = C.REPORT_LISTS[t], items = rep.list || [];
+  h += '<div class="card"><h2>' + L.title + '</h2>';
+  if (!items.length) h += '<div class="muted small" style="margin-bottom:8px">None added.</div>';
+  items.forEach((it, i) => { h += '<div class="list-item" data-act="editli" data-i="' + i + '"><b>' + esc(it.issue || '(blank)') + '</b><div class="small muted">' + esc([it.action, it.owner, t === 'year' ? it.deadline : (it.deadline ? C.fmtGC(it.deadline) : ''), it.status].filter(Boolean).join(' · ')) + '</div></div>'; });
+  h += '<button class="btn sec full" data-act="addli">+ Add</button></div>';
+  h += '<div class="card"><button class="btn full" data-act="export">Download Excel (this report + all logs)</button><div class="small muted" style="margin-top:6px">The workbook includes the monthly, quarterly and annual reports you have selected, plus every log sheet.</div></div>';
+  return h;
+}
+
+function viewMore() {
+  const s = db.settings, n = k => db[k].length;
+  const demo = ['milk', 'herd', 'breeding', 'health', 'feed', 'sales', 'actions'].some(k => db[k].some(r => r.demo));
+  return '<div class="card"><h2>Settings</h2>' +
+    '<label class="f"><span>Farm / union name</span><input value="' + esc(s.farmName) + '" data-set="farmName"></label>' +
+    '<label class="f"><span>Default “Prepared by”</span><input value="' + esc(s.preparedBy) + '" data-set="preparedBy" placeholder="Dairy Farm Manager name"></label>' +
+    '<label class="f"><span>Annual / quarterly year starts in</span><select data-set="yearStart" data-num="1"><option value="1"' + (s.yearStart === 1 ? ' selected' : '') + '>Meskerem (E.C. calendar year)</option><option value="11"' + (s.yearStart === 11 ? ' selected' : '') + '>Hamle (Ethiopian fiscal year)</option></select><em>Quarters are three months each; the last quarter also takes Pagume.</em></label>' +
+    '<label class="f"><span>Milk sold and revenue are taken from</span><select data-set="milkSource"><option value="milklog"' + (s.milkSource === 'milklog' ? ' selected' : '') + '>Daily milk log</option><option value="saleslog"' + (s.milkSource === 'saleslog' ? ' selected' : '') + '>Sales log (product containing “milk”)</option></select><em>Pick one source so milk is not counted twice.</em></label></div>' +
+    cloudCard() +
+    '<div class="card"><h2>Export and backup</h2><button class="btn full" data-act="export" style="margin-bottom:8px">Download Excel workbook</button>' +
+    (navigator.canShare ? '<button class="btn sec full" data-act="shareX" style="margin-bottom:8px">Share Excel (Telegram, email…)</button>' : '') +
+    '<button class="btn sec full" data-act="backup" style="margin-bottom:8px">Save backup file (.json)</button>' +
+    '<label class="btn sec full" style="display:block;text-align:center;margin-bottom:8px">Restore from backup<input type="file" accept=".json,application/json" data-act="restore" hidden></label>' +
+    '<div class="small muted">' + (cloudCfg() ? 'Data is saved on this phone and synced to your Firebase project.' : 'Data is stored only on this phone.') + ' Save a backup regularly, especially before clearing browser data.</div></div>' +
+    '<div class="card"><h2>Data on this phone</h2><div class="small muted">' + n('milk') + ' milk · ' + n('herd') + ' animals · ' + n('breeding') + ' breeding · ' + n('health') + ' health · ' + n('feed') + ' feed · ' + n('sales') + ' sales · ' + n('actions') + ' actions</div><hr>' +
+    (demo ? '<button class="btn sec full" data-act="rmdemo" style="margin-bottom:8px">Remove demo data</button>' : '<button class="btn sec full" data-act="demo" style="margin-bottom:8px">Load demo data (to try the app)</button>') +
+    '<button class="btn del full" data-act="clear">Delete all data</button></div>' +
+    (installEvt ? '<div class="card"><button class="btn full" data-act="install">Install app on home screen</button></div>' : '') +
+    '<div class="card"><h2>How figures are calculated</h2><div class="small muted">' +
+    '• Milk, feed, health, breeding and sales figures are summed from the logs by date within the report period.<br>' +
+    '• Average per day = total ÷ days elapsed in the period (up to today).<br>' +
+    '• Herd counts are as at the end of the period (or today), using each animal’s current category and its entry/exit dates.<br>' +
+    '• Births = herd records “Born on farm” dated in the period. Deaths = “Died” dated in the period.<br>' +
+    '• Served = AI/natural services; Confirmed pregnancies = “Pregnant” by diagnosis date; Successful calving = live calf by calving date.<br>' +
+    '• Feed cost = kg received × unit cost. Operating expenses = feed + health costs + other expenses you enter.<br>' +
+    '• Surplus = milk revenue + other sales − operating expenses.<br>' +
+    '• Complaints, breakdowns and workdays are entered by tapping the indicator. You can override any figure.<br>' +
+    '• Quarterly/annual targets default to the sum (or average, or latest) of the monthly targets you set.</div></div>';
+}
+
+/* ---------- forms ---------- */
+let FORM = null, sheetOpen = false;
+function openSheet(html) {
+  const el = $('#sheet'); el.innerHTML = '<div class="sheet">' + html + '</div>'; el.hidden = false;
+  if (!sheetOpen) { sheetOpen = true; try { history.pushState({ sheet: 1 }, ''); } catch (e) { } }
+}
+function closeSheet() {
+  const el = $('#sheet'); el.hidden = true; el.innerHTML = '';
+  if (sheetOpen) { sheetOpen = false; try { if (history.state && history.state.sheet) history.back(); } catch (e) { } }
+  FORM = null;
+}
+function fieldHtml(f, v) {
+  const val = v === undefined || v === null ? '' : v, id = 'f_' + f.k;
+  let inner;
+  if (f.type === 'calc') return '<label class="f"><span>' + esc(f.label) + '</span><div class="calc" data-calc="' + f.k + '">—</div>' + (f.hint ? '<em>' + esc(f.hint) + '</em>' : '') + '</label>';
+  if (f.type === 'select') inner = '<select name="' + f.k + '" id="' + id + '">' + f.options.map(o => '<option value="' + esc(o) + '"' + (String(o) === String(val) ? ' selected' : '') + '>' + (o === '' ? '—' : esc(o)) + '</option>').join('') + '</select>';
+  else if (f.type === 'textarea') inner = '<textarea name="' + f.k + '" id="' + id + '">' + esc(val) + '</textarea>';
+  else if (f.type === 'number') inner = '<input name="' + f.k + '" id="' + id + '" type="number" inputmode="decimal" step="any" min="0" value="' + esc(val) + '">';
+  else if (f.type === 'date') inner = '<input name="' + f.k + '" id="' + id + '" type="date" value="' + esc(val) + '">';
+  else inner = '<input name="' + f.k + '" id="' + id + '" type="text" value="' + esc(val) + '"' + (f.list ? ' list="dl_' + f.k + '"' : '') + ' autocomplete="off">' + (f.list ? '<datalist id="dl_' + f.k + '">' + f.list.map(o => '<option value="' + esc(o) + '">').join('') + '</datalist>' : '');
+  return '<label class="f"><span>' + esc(f.label) + (f.required ? ' *' : '') + '</span>' + inner + (f.type === 'date' ? '<em data-ec="' + f.k + '"></em>' : '') + (f.hint ? '<em>' + esc(f.hint) + '</em>' : '') + '</label>';
+}
+function openForm(cfg) {
+  FORM = cfg;
+  const v = cfg.values || {};
+  openSheet('<h3>' + esc(cfg.title) + '</h3><div id="formmsg"></div>' + cfg.fields.map(f => fieldHtml(f, v[f.k])).join('') +
+    '<div class="row"><button class="btn" data-act="saveform" id="savebtn">Save</button><button class="btn sec" data-act="closesheet">Cancel</button></div>' +
+    (cfg.onDelete ? '<button class="btn del full" style="margin-top:10px" data-act="delform">Delete</button>' : ''));
+  refreshForm();
+}
+function formValues() {
+  const rec = {};
+  FORM.fields.forEach(f => {
+    if (f.type === 'calc') return;
+    const el = $('#sheet [name="' + f.k + '"]'); if (!el) return;
+    let x = el.value;
+    if (f.type === 'number') { x = x === '' ? '' : parseFloat(x); if (typeof x === 'number' && !isFinite(x)) x = ''; }
+    else if (typeof x === 'string') x = x.trim();
+    rec[f.k] = x;
+  });
+  return rec;
+}
+function refreshForm() {
+  if (!FORM) return;
+  const rec = formValues();
+  FORM.fields.forEach(f => {
+    if (f.type === 'calc') { const el = $('#sheet [data-calc="' + f.k + '"]'); if (el) { const v = f.calc(rec); el.textContent = f.isDate ? (v ? C.fmtEC(v) + ' (' + v + ')' : '—') : fmt(v, f.dec || 0) + (f.k === 'closing' ? ' kg' : ''); } }
+    if (f.type === 'date') { const em = $('#sheet [data-ec="' + f.k + '"]'); if (em) em.textContent = rec[f.k] ? C.fmtEC(rec[f.k]) : 'Gregorian date; Ethiopian date shows here'; }
+  });
+}
+function defaults(key) {
+  const rec = {};
+  C.COLLECTIONS[key].fields.forEach(f => { if (f.def !== undefined) rec[f.k] = f.def; });
+  if (C.COLLECTIONS[key].fields.some(f => f.k === 'date')) rec.date = today;
+  if (key === 'milk' && db.milk.length) { const last = db.milk.slice().sort((a, b) => (b.created || 0) - (a.created || 0))[0]; rec.price = last.price; rec.buyer = last.buyer; rec.session = new Date().getHours() < 12 ? 'Morning' : 'Evening'; }
+  if (key === 'feed' && db.feed.length) { const last = db.feed.slice().sort((a, b) => (b.created || 0) - (a.created || 0))[0]; rec.kind = last.kind; }
+  return rec;
+}
+function openRecord(key, id, preset) {
+  const C0 = C.COLLECTIONS[key], existing = id ? db[key].find(r => r.id === id) : null;
+  const vals = existing ? existing : Object.assign(defaults(key), preset || {});
+  openForm({
+    title: (existing ? 'Edit ' : 'New ') + C0.title.toLowerCase() + ' record', fields: C0.fields, values: vals,
+    validate: rec => {
+      const v = C.validate(key, rec);
+      if (key === 'milk' && rec.date && db.milk.some(r => r.date === rec.date && r.session === rec.session && r.id !== id)) v.warns.push('A record for this date and session already exists.');
+      return v;
+    },
+    onSave: rec => {
+      if (existing) Object.assign(existing, rec); else db[key].push(Object.assign({ id: C.uid(), created: Date.now() }, rec));
+      save(); toast('Saved');
+    },
+    onDelete: existing ? () => { if (confirm('Delete this record?')) { db[key] = db[key].filter(r => r.id !== id); save(); toast('Deleted'); return true; } return false; } : null
+  });
+}
+
+function getRep(key) { return db.reports[key] || (db.reports[key] = {}); }
+function openIndicator(k) {
+  const period = periodOf(state.rtype), R = C.reportData(db, period, db.settings, today), r = R.rows.find(x => x.k === k);
+  const rep = getRep(R.P.key), t = state.rtype;
+  const ph = r.targetDerived ? ' placeholder="' + esc(fmt(r.target, r.dec)) + ' (from months)"' : '';
+  const own = rep.targets && has(rep.targets[k]) ? rep.targets[k] : '';
+  const ov = rep.overrides && has(rep.overrides[k]) ? rep.overrides[k] : '';
+  openSheet('<h3>' + esc(r.name) + '</h3><div class="small muted" style="margin-bottom:10px">' + esc(r.unit) + ' · ' + esc(R.P.label) + '</div>' +
+    '<div class="stat" style="margin-bottom:12px"><b>' + (r.auto === null ? 'No data' : fmt(r.auto, r.dec)) + '</b><span>' + (r.manual ? (t === 'month' ? 'Enter the figure below (not taken from logs)' : 'Sum of months entered') : 'Calculated from your logs') + '</span></div>' +
+    '<label class="f"><span>' + { month: 'Monthly', quarter: 'Quarter', year: 'Annual' }[t] + ' target (' + esc(r.unit) + ')</span><input id="i_t" type="number" inputmode="decimal" step="any" value="' + esc(own) + '"' + ph + '></label>' +
+    '<label class="f"><span>' + (r.manual ? 'Actual result' : 'Actual — override (leave empty to use the calculated figure)') + '</span><input id="i_o" type="number" inputmode="decimal" step="any" value="' + esc(ov) + '"' + (r.auto !== null ? ' placeholder="' + esc(fmt(r.auto, r.dec)) + '"' : '') + '></label>' +
+    '<label class="f"><span>Remarks / explanation</span><textarea id="i_r">' + esc(r.remarks) + '</textarea></label>' +
+    '<div class="row"><button class="btn" data-act="saveind" data-k="' + k + '">Save</button><button class="btn sec" data-act="closesheet">Cancel</button></div>');
+}
+function openListItem(i) {
+  const t = state.rtype, L = C.REPORT_LISTS[t], rep = getRep(C.resolvePeriod(periodOf(t), db.settings).key);
+  const fields = L.fields.map(f => ({ k: f[0], label: f[1], type: f[2] === 'date' ? 'date' : f[2] === 'status' && t !== 'year' ? 'select' : f[2] === 'number' ? 'number' : (f[0] === 'issue' || f[0] === 'action') ? 'textarea' : 'text', options: C.STATUS, def: f[2] === 'status' && t !== 'year' ? 'Not started' : undefined, required: f[0] === 'issue' }));
+  const list = rep.list || (rep.list = []);
+  const existing = i !== undefined ? list[i] : null;
+  openForm({
+    title: (existing ? 'Edit ' : 'Add ') + L.title.toLowerCase().replace(/s$/, ''), fields, values: existing || { status: t === 'year' ? '' : 'Not started' },
+    validate: rec => ({ errs: rec.issue ? [] : [L.fields[0][1] + ' is required'], warns: [] }),
+    onSave: rec => { if (existing) Object.assign(existing, rec); else list.push(rec); save(); },
+    onDelete: existing ? () => { if (confirm('Remove this row?')) { list.splice(i, 1); save(); return true; } return false; } : null
+  });
+}
+
+/* ---------- export ---------- */
+function stamp() { const e = C.isoToEC(today); return e.y + '-' + String(e.m).padStart(2, '0') + '-' + String(e.d).padStart(2, '0') + 'EC'; }
+function buildXlsxBlob() { const u8 = C.exportWorkbook(db, state.sel, db.settings, today); return new Blob([u8], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }); }
+function download(blob, name) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000); toast('Saved to Downloads: ' + name); }
+async function shareFile(blob, name) {
+  const f = new File([blob], name, { type: blob.type });
+  try { if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: name }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+  download(blob, name);
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click', e => {
+  if (e.target === $('#sheet')) { closeSheet(); return; }
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const a = el.dataset.act;
+  if (el.tagName === 'SELECT' || el.tagName === 'INPUT') return;
+  switch (a) {
+    case 'tab': state.tab = el.dataset.tab; render(); window.scrollTo(0, 0); break;
+    case 'log': state.logKey = el.dataset.key; render(); break;
+    case 'go': { const g = el.dataset.go; if (g === 'actions') state.tab = 'actions'; else { state.tab = 'logs'; state.logKey = g; } render(); window.scrollTo(0, 0); break; }
+    case 'actf': state.actFilter = el.dataset.f; render(); break;
+    case 'more': state.limit[el.dataset.key] = (state.limit[el.dataset.key] || 60) + 100; render(); break;
+    case 'add': openRecord(el.dataset.key, null, el.dataset.key === 'health' ? { kind: 'Treatment' } : null); break;
+    case 'edit': openRecord(el.dataset.key, el.dataset.id); break;
+    case 'closesheet': closeSheet(); break;
+    case 'saveform': {
+      const rec = formValues(), v = FORM.validate ? FORM.validate(rec) : { errs: [], warns: [] }, box = $('#formmsg');
+      if (v.errs.length) { box.innerHTML = '<div class="err">' + v.errs.map(esc).join('<br>') + '</div>'; $('#sheet .sheet').scrollTo(0, 0); return; }
+      if (v.warns.length && !FORM.warned) { FORM.warned = true; box.innerHTML = '<div class="warnbox">' + v.warns.map(esc).join('<br>') + '<br><b>Tap Save again to keep it anyway.</b></div>'; $('#sheet .sheet').scrollTo(0, 0); return; }
+      FORM.onSave(rec); closeSheet(); render(); break;
+    }
+    case 'delform': if (FORM.onDelete && FORM.onDelete()) { closeSheet(); render(); } break;
+    case 'rtype': state.rtype = el.dataset.t; render(); break;
+    case 'ind': openIndicator(el.dataset.k); break;
+    case 'saveind': {
+      const k = el.dataset.k, rep = getRep(C.resolvePeriod(periodOf(state.rtype), db.settings).key);
+      rep.targets = rep.targets || {}; rep.overrides = rep.overrides || {}; rep.remarks = rep.remarks || {};
+      const tv = $('#i_t').value, ov = $('#i_o').value, rm = $('#i_r').value.trim();
+      if (tv === '') delete rep.targets[k]; else rep.targets[k] = parseFloat(tv);
+      if (ov === '') delete rep.overrides[k]; else rep.overrides[k] = parseFloat(ov);
+      if (!rm) delete rep.remarks[k]; else rep.remarks[k] = rm;
+      save(); closeSheet(); render(); toast('Saved'); break;
+    }
+    case 'addli': openListItem(); break;
+    case 'editli': openListItem(parseInt(el.dataset.i, 10)); break;
+    case 'export': { try { download(buildXlsxBlob(), 'COBFCU_Dairy_Farm_Report_' + stamp() + '.xlsx'); } catch (err) { toast('Export failed: ' + err.message); } break; }
+    case 'shareX': shareFile(buildXlsxBlob(), 'COBFCU_Dairy_Farm_Report_' + stamp() + '.xlsx'); break;
+    case 'backup': download(new Blob([JSON.stringify(db)], { type: 'application/json' }), 'COBFCU_Dairy_backup_' + stamp() + '.json'); break;
+    case 'demo': { const D = C.demoData(today); Object.keys(D).forEach(k => db[k] = db[k].concat(D[k])); save(); render(); toast('Demo data loaded'); break; }
+    case 'rmdemo': ['milk', 'herd', 'breeding', 'health', 'feed', 'sales', 'actions'].forEach(k => db[k] = db[k].filter(r => !r.demo)); save(); render(); toast('Demo data removed'); break;
+    case 'clear': if (confirm('Delete ALL records, reports and settings from this phone' + (cloudCfg() ? ' AND from the cloud (every synced phone)' : '') + '? Save a backup first if unsure.') && confirm('This cannot be undone. Delete everything?')) { db = C.emptyDB(); save(); initSel(); render(); toast('All data deleted'); } break;
+    case 'cloudconnect': {
+      const p = parseCloudInput(($('#cl_cfg').value || '').trim()), fin = ($('#cl_farm').value || '').trim();
+      if (!p) { toast('Could not read that. Paste the firebaseConfig from the Firebase console.'); break; }
+      const farm = fin || p.farm || genFarm();
+      if (!/^[A-Za-z0-9_-]{8,64}$/.test(farm)) { toast('Farm code: 8 to 64 letters, numbers, - or _'); break; }
+      try { localStorage.setItem(CFG_KEY, JSON.stringify({ firebase: p.firebase, farm })); location.reload(); } catch (err) { toast('Could not save the connection on this phone'); }
+      break;
+    }
+    case 'cloudshare': {
+      const c = cloudCfg(); if (!c) break;
+      const code = 'COBFCU1:' + btoa(JSON.stringify(c));
+      (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject()).then(() => toast('Setup code copied. Paste it on the other phone.')).catch(() => prompt('Copy this setup code:', code));
+      break;
+    }
+    case 'cloudsignin': cloudGoogle(); break;
+    case 'cloudsignout': (async () => { try { await cloud.mods.auth.signOut(cloud.auth); } catch (err) { } location.reload(); })(); break;
+    case 'cloudsync': if (cloud.on) { cloudFlush(); toast('Sync requested'); } else { cloud.started = false; cloudStart(); toast('Reconnecting…'); } break;
+    case 'clouddisc': if (confirm('Disconnect this phone from the cloud? Data on this phone and in the cloud is kept.')) { try { localStorage.removeItem(CFG_KEY); } catch (err) { } location.reload(); } break;
+    case 'install': if (installEvt) { installEvt.prompt(); installEvt = null; render(); } break;
+  }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.dataset.act === 'filter') { state.filter[el.dataset.key] = el.value; render(); }
+  else if (el.dataset.act === 'rsel') {
+    const t = state.rtype, w = el.dataset.w, v = parseInt(el.value, 10), s = state.sel;
+    if (t === 'month') s.month[w] = v; else if (t === 'quarter') s.quarter[w] = v; else s.year.y = v;
+    render();
+  } else if (el.dataset.act === 'restore') {
+    const f = el.files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => { try { const d = C.normalizeDB(JSON.parse(rd.result)); if (!Array.isArray(d.milk)) throw new Error('not a backup'); if (confirm('Replace everything on this phone with the backup?')) { db = d; save(); initSel(); render(); toast('Backup restored'); } } catch (err) { toast('That file is not a valid backup'); } };
+    rd.readAsText(f);
+  } else if (el.dataset.set) {
+    db.settings[el.dataset.set] = el.dataset.num ? parseInt(el.value, 10) : el.value; save();
+    if (el.dataset.set === 'yearStart') { initSel(); }
+  } else if (el.dataset.rep) {
+    const [kind, idx] = el.dataset.rep.split(':'), key = C.resolvePeriod(periodOf(state.rtype), db.settings).key, rep = getRep(key);
+    if (kind === 'header') { rep.header = rep.header || {}; rep.header[idx] = el.value; }
+    else if (kind === 'narr') { rep.narrative = rep.narrative || {}; rep.narrative[parseInt(idx, 10)] = el.value; }
+    else if (kind === 'other') { if (el.value === '') delete rep.other; else rep.other = parseFloat(el.value); }
+    save(); if (el.dataset.rerender) render();
+  }
+});
+document.addEventListener('input', e => {
+  if (e.target.dataset.act === 'search') { state.q = e.target.value; const pos = e.target.selectionStart; render(); const n = $('[data-act="search"]'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } return; }
+  if (FORM && e.target.closest('#sheet')) refreshForm();
+});
+document.addEventListener('change', e => { if (FORM && e.target.closest('#sheet')) refreshForm(); });
+window.addEventListener('popstate', () => { if (sheetOpen) { sheetOpen = false; $('#sheet').hidden = true; $('#sheet').innerHTML = ''; FORM = null; } });
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (state.tab === 'more') render(); });
+window.addEventListener('focus', () => { if (C.todayISO() !== today) render(); });
+
+load(); initSel(); render();
+window.addEventListener('online', () => { if (cloudCfg() && !cloud.on) cloudStart(); else { setCloud(cloud.status, cloud.msg); cloudFlush(); } });
+window.addEventListener('offline', () => setCloud(cloud.status, cloud.msg));
+cloudStart();
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => { });
+window.__app = { get db() { return db; }, state, render };
+})();
+</script>
+</body>
+</html>
